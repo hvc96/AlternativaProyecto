@@ -19,7 +19,7 @@ public class Jugador {
         x = anchoPantalla / 2;
         y = altoPantalla - 20;
 
-        hitboxJugador = new RectF(x*1, y*1, x + ancho, y + alto);
+        hitboxJugador = new RectF(x-ancho/2, y-alto/2, x + ancho/2, y + alto/2);
         velocidadJugador = 350;
     }
 
@@ -32,8 +32,8 @@ public class Jugador {
         jugadorMoviendo = state;
     }
 
-    // Update del movimiento
-    public void update(long fps){
+    // Actualizacion del movimiento
+    public void actualizarFisica(long fps){
         if(jugadorMoviendo == izquierda){
             x = x - velocidadJugador / fps;
         }

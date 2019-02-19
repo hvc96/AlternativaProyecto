@@ -11,13 +11,17 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
+import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
+import cuadrado.villar.hadrian.arkanoid.CJuego.Jugador;
 
 public class Juego extends Escena {
     float posX, left, top, right, bottom;
     int alto, ancho;
     boolean pulsandoIzquierda, pulsandoDerecha;
-    RectF jugador;
+    //RectF jugador;
     Paint paintJugador;
+    Bola bola;
+    Jugador jugador;
 
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
@@ -29,9 +33,11 @@ public class Juego extends Escena {
         right=(ancho/2)+20;
         bottom=(alto-10);
 
-        jugador = new RectF(left, top, right, bottom);
-        paintJugador= new Paint(Color.GREEN);
+        //jugador = new RectF(left, top, right, bottom);
 
+        paintJugador= new Paint(Color.GREEN);
+        jugador =new Jugador(anchoPantalla,altoPantalla);
+        bola = new Bola(screenX, screenY);
 //        fondo = getBitmapFromAssets("fondoJuego.jpg");
 //        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
     }
