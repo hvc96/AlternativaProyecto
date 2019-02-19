@@ -15,10 +15,10 @@ import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Jugador;
 
 public class Juego extends Escena {
-    float posX, left, top, right, bottom;
+    float posX;
     int alto, ancho;
     boolean pulsandoIzquierda, pulsandoDerecha;
-    //RectF jugador;
+    RectF izquierda,derecha;
     Paint paintJugador;
     Bola bola;
     Jugador jugador;
@@ -28,12 +28,8 @@ public class Juego extends Escena {
         alto = altoPantalla;
         ancho = anchoPantalla;
 
-        left=(ancho/2)-20;
-        top=(alto-25);
-        right=(ancho/2)+20;
-        bottom=(alto-10);
-
-        //jugador = new RectF(left, top, right, bottom);
+        izquierda = new RectF(0, 0, anchoPantalla/2, altoPantalla);
+        derecha = new RectF(anchoPantalla/2, 0, anchoPantalla, altoPantalla);
 
         paintJugador= new Paint(Color.GREEN);
         jugador =new Jugador(anchoPantalla,altoPantalla);
@@ -53,7 +49,7 @@ public class Juego extends Escena {
         try {
             c.drawColor(Color.BLUE); // Establecemos un color de fondo. En este caso azul
             super.dibujar(c);
-            c.drawRect(jugador,paintJugador);
+
             //c.drawBitmap(fondo,0,0,null);
             super.dibujar(c);
         } catch (Exception e) {

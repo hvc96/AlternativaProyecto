@@ -23,6 +23,7 @@ public class Bola {
 
         // Place the ball in the centre of the screen at the bottom
         // Make it a 10 pixel x 10 pixel square
+
         hitboxBola = new RectF(x*1, y*1, x + ancho, y + alto);
     }
 
