@@ -3,6 +3,7 @@ package cuadrado.villar.hadrian.arkanoid.CPantallas;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -13,8 +14,8 @@ public class Creditos extends Escena {
 
     public Creditos(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
-        fondo = getBitmapFromAssets("creditos.jpg");
-        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
+//        fondo = getBitmapFromAssets("fondoCreditos.jpg");
+//        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
     }
 
 
@@ -27,7 +28,8 @@ public class Creditos extends Escena {
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
-            c.drawBitmap(fondo,0,0,null);
+            c.drawColor(Color.GREEN);
+//            c.drawBitmap(fondo,0,0,null);
             super.dibujar(c);
         } catch (Exception e) {
             Log.i("Error al dibujar",e.getLocalizedMessage());

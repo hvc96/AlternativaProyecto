@@ -3,6 +3,7 @@ package cuadrado.villar.hadrian.arkanoid.CPantallas;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -12,27 +13,26 @@ public class Ayuda extends Escena {
 
     public Ayuda(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
-        fondo = getBitmapFromAssets("a5.jpg");
-        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
+//        fondo = getBitmapFromAssets("fondoAyuda.jpg");
+//        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
     }
 
 
-
     // Actualizamos la física de los elementos comunes en pantalla
-    public void actualizarFisica(){
+    public void actualizarFisica() {
 
     }
 
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
-            c.drawBitmap(fondo,0,0,null);
+            c.drawColor(Color.RED);
+            //            c.drawBitmap(fondo,0,0,null);
             super.dibujar(c);
         } catch (Exception e) {
-            Log.i("Error al dibujar",e.getLocalizedMessage());
+            Log.i("Error al dibujar", e.getLocalizedMessage());
         }
     }
-
 
 
     public int onTouchEvent(MotionEvent event) {
@@ -55,8 +55,8 @@ public class Ayuda extends Escena {
             default:
                 Log.i("Otra acción", "Acción no definida: " + accion);
         }
-        int idPadre= super.onTouchEvent(event);
-        if (idPadre!=idEscena) return idPadre;
+        int idPadre = super.onTouchEvent(event);
+        if (idPadre != idEscena) return idPadre;
 
         return idEscena;
     }

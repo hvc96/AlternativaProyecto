@@ -3,6 +3,7 @@ package cuadrado.villar.hadrian.arkanoid.CPantallas;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,8 +18,8 @@ public class Menu extends Escena {
 
     public Menu(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
-        fondo = getBitmapFromAssets("a7.png");
-        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
+//        fondo = getBitmapFromAssets("fondoMenu.png");
+//        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
         alto=altoPantalla/15;
         ancho= anchoPantalla/10;
 
@@ -70,7 +71,8 @@ public class Menu extends Escena {
     // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
-            c.drawBitmap(fondo,0,0,null);
+            c.drawColor(Color.LTGRAY);
+//            c.drawBitmap(fondo,0,0,null);
             super.dibujar(c);
             c.drawRect(juego,pBoton2);
             c.drawCircle(ancho*5,alto*3,ancho*3,pBoton2);

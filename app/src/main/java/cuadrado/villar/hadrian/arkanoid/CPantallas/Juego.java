@@ -3,35 +3,57 @@ package cuadrado.villar.hadrian.arkanoid.CPantallas;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 
 public class Juego extends Escena {
+    float posX, left, top, right, bottom;
+    int alto, ancho;
+    boolean pulsandoIzquierda, pulsandoDerecha;
+    RectF jugador;
+    Paint paintJugador;
+
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
-        fondo = getBitmapFromAssets("creditos.jpg");
-        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
+        alto = altoPantalla;
+        ancho = anchoPantalla;
+
+        left=(ancho/2)-20;
+        top=(alto-25);
+        right=(ancho/2)+20;
+        bottom=(alto-10);
+
+        jugador = new RectF(left, top, right, bottom);
+        paintJugador= new Paint(Color.GREEN);
+
+//        fondo = getBitmapFromAssets("fondoJuego.jpg");
+//        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
     }
 
 
-
     // Actualizamos la física de los elementos comunes en pantalla
-    public void actualizarFisica(){
+    public void actualizarFisica() {
 
     }
 
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
-            c.drawBitmap(fondo,0,0,null);
+            c.drawColor(Color.BLUE); // Establecemos un color de fondo. En este caso azul
+            super.dibujar(c);
+            c.drawRect(jugador,paintJugador);
+            //c.drawBitmap(fondo,0,0,null);
             super.dibujar(c);
         } catch (Exception e) {
-            Log.i("Error al dibujar",e.getLocalizedMessage());
+            Log.i("Error al dibujar", e.getLocalizedMessage());
         }
     }
-
 
 
     public int onTouchEvent(MotionEvent event) {
@@ -41,6 +63,14 @@ public class Juego extends Escena {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
+                posX = event.getX(pointerIndex);
+                if (posX < ancho / 2) {      //Izquierda
+                    //Mueve jugador izquierda
+                } else {                     //Derecha
+
+                }
+                break;
+
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
 
@@ -55,8 +85,8 @@ public class Juego extends Escena {
                 Log.i("Otra acción", "Acción no definida: " + accion);
         }
 
-        int idPadre= super.onTouchEvent(event);
-        if (idPadre!=idEscena) return idPadre;
+        int idPadre = super.onTouchEvent(event);
+        if (idPadre != idEscena) return idPadre;
 
         return idEscena;
     }
