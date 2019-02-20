@@ -1,14 +1,18 @@
 package cuadrado.villar.hadrian.arkanoid.CJuego;
 
+import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 import java.util.Random;
 
 public class Bola {
 
-    RectF hitboxBola;
+    RectF contenedor;
     float velocidadX, velocidadY, anchoBola = 10, altoBola = 10, x, y;
-
+    public float ancho, alto, x, y;
+    public Bitmap imagen;
+    public PointF posicion;
 
     public Bola(int anchoPantalla, int altoPantalla) {
 
@@ -24,18 +28,18 @@ public class Bola {
         // Place the ball in the centre of the screen at the bottom
         // Make it a 10 pixel x 10 pixel square
 
-        hitboxBola = new RectF(x*1, y*1, x + ancho, y + alto);
+        contenedor = new RectF(posicion.x, posicion.y, posicion.x + imagen.getWidth(), posicion.y + imagen.getWidth());
     }
 
-    public RectF getHitboxBola() {
-        return hitboxBola;
+    public RectF getContenedor() {
+        return contenedor;
     }
 
     public void actualizarFisica(long fps) {
-        hitboxBola.left = hitboxBola.left + (velocidadX / fps);
-        hitboxBola.top = hitboxBola.top + (velocidadY / fps);
-        hitboxBola.right = hitboxBola.left + anchoBola;
-        hitboxBola.bottom = hitboxBola.top - altoBola;
+        contenedor.left = contenedor.left + (velocidadX / fps);
+        contenedor.top = contenedor.top + (velocidadY / fps);
+        contenedor.right = contenedor.left + anchoBola;
+        contenedor.bottom = contenedor.top - altoBola;
     }
 
     public void reverseYVelocity() {
@@ -57,20 +61,20 @@ public class Bola {
     }
 
     public void clearObstacleY(float y) {
-        hitboxBola.bottom = y;
-        hitboxBola.top = y - altoBola;
+        contenedor.bottom = y;
+        contenedor.top = y - altoBola;
     }
 
     public void clearObstacleX(float x) {
-        hitboxBola.left = x;
-        hitboxBola.right = x + anchoBola;
+        contenedor.left = x;
+        contenedor.right = x + anchoBola;
     }
 
     public void reset(int x, int y) {
-        hitboxBola.left = x / 2;
-        hitboxBola.top = y - 20;
-        hitboxBola.right = x / 2 + anchoBola;
-        hitboxBola.bottom = y - 20 - altoBola;
+        contenedor.left = x / 2;
+        contenedor.top = y - 20;
+        contenedor.right = x / 2 + anchoBola;
+        contenedor.bottom = y - 20 - altoBola;
     }
 
 }
