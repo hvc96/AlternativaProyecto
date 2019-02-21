@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -15,29 +13,28 @@ import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Jugador;
 
 public class Juego extends Escena {
-    float posX;
-    int alto, ancho;
+    float dedoCoordX,dedoCoordY;
+    int movimiento;
     boolean pulsandoIzquierda, pulsandoDerecha;
     RectF izquierda,derecha;
-    Paint paintJugador;
     Bola bola;
     Jugador jugador;
     Bitmap jugadorImagen, bolaImagen;
-    float velocidadJugador=100, velocidadBolaX=50,velocidadBolaY=75;
+    float velocidadJugador=10, velocidadBolaX=50,velocidadBolaY=75;
 
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
-        alto = altoPantalla;
-        ancho = anchoPantalla;
 
         izquierda = new RectF(0, 0, anchoPantalla/2, altoPantalla);
         derecha = new RectF(anchoPantalla/2, 0, anchoPantalla, altoPantalla);
 
-        jugadorImagen = getBitmapFromAssets("jugador_moviendose_1.jpg");
+        jugadorImagen = getBitmapFromAssets("Jugador/jugador_moviendose_1.png");
+//        jugadorImagen = getBitmapFromAssets(context,"\\Jugador\\jugador_moviendose_1.png");
         jugadorImagen= Bitmap.createScaledBitmap(jugadorImagen,getDp(100),getDp(30),false);
-        jugador =new Jugador(jugadorImagen,anchoPantalla/2,altoPantalla-getDp(30),velocidadJugador);
+        jugador =new Jugador(jugadorImagen,anchoPantalla/2,altoPantalla-getDp(30),velocidadJugador,anchoPantalla);
 
-        bolaImagen = getBitmapFromAssets("bola.png");
+        bolaImagen = getBitmapFromAssets("Bola/bola.png");
+//        bolaImagen = getBitmapFromAssets(context,"\\Bola\\bola.png");
         bolaImagen= Bitmap.createScaledBitmap(bolaImagen,getDp(25),getDp(25),false);
         bola =new Bola(bolaImagen,anchoPantalla/2,altoPantalla-getDp(55),velocidadBolaX,velocidadBolaY);
 
@@ -46,14 +43,20 @@ public class Juego extends Escena {
 
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
-
+       switch (movimiento){
+           case 1:
+        jugador.moverJugador(1);
+               break;
+           case 2:
+        jugador.moverJugador(2);
+               break;
+       }
     }
 
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
             c.drawColor(Color.BLACK); // Establecemos un color de fondo. En este caso negro
-//            super.dibujar(c);
             bola.dibujar(c);
             jugador.dibujar(c);
         } catch (Exception e) {
@@ -69,11 +72,12 @@ public class Juego extends Escena {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
-                posX = event.getX(pointerIndex);
-                if (posX < ancho / 2) {      //Izquierda
-                    //Mueve jugador izquierda
-                } else {                     //Derecha
-
+                dedoCoordX = event.getX(pointerIndex);
+                dedoCoordY = event.getY(pointerIndex);
+                if (izquierda.contains(dedoCoordX,dedoCoordY)) {
+                    movimiento=1;// Mover izquierda
+                } else {
+                    movimiento=2;// Mover derecha
                 }
                 break;
 

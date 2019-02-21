@@ -10,7 +10,7 @@ import java.util.Random;
 public class Bola {
 
     RectF contenedor;
-    float velocidadX, velocidadY, anchoBola = 10, altoBola = 10, x, y;
+    float velocidadX, velocidadY, anchoBola = 10, altoBola = 10;
     public Bitmap imagen;
     public PointF posicion;
 

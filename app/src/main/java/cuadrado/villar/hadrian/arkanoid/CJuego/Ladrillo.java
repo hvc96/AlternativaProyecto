@@ -13,10 +13,12 @@ public class Ladrillo {
 
             int padding = 1;
 
-            rect = new RectF(column * width + padding,
+            rect = new RectF(
+                    column * width + padding,
                     row * height + padding,
                     column * width + width - padding,
-                    row * height + height - padding);
+                    row * height + height - padding
+            );
         }
 
         public RectF getRect(){
