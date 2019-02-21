@@ -27,7 +27,7 @@ public class Jugador {
         return contenedor;
     }
 
-    public void moverNave(int direccion) {
+    public void moverJugador(int direccion) {
         switch (direccion) {
             case 1:
                 this.posicion.x = direccion - imagen.getWidth() / 2;
