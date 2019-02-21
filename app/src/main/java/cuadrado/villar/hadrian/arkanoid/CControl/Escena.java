@@ -20,7 +20,7 @@ import java.util.Map;
 public class Escena {
     Context context;
     public int idEscena;
-    int anchoPantalla, altoPantalla;
+    public int anchoPantalla, altoPantalla;
     public Bitmap fondo, botonRetroceder;
     public Paint pTexto,pTexto2, pBoton, pBoton2;
     Rect backToMenu;

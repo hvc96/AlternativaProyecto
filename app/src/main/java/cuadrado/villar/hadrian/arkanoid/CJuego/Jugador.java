@@ -1,6 +1,7 @@
 package cuadrado.villar.hadrian.arkanoid.CJuego;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
@@ -10,37 +11,21 @@ public class Jugador {
     public Bitmap imagen;
     public PointF posicion;
 
-    public Jugador(int anchoPantalla, int altoPantalla) {
 
-
-        // Inicializar
-        x = anchoPantalla / 2;
-        y = altoPantalla - 20;
-
+    public Jugador(Bitmap imagen,float x,float y,float velocidadJugador) {
+        this.posicion=new PointF(x,y);
+        this.imagen = imagen;
         contenedor = new RectF(posicion.x, posicion.y, posicion.x + imagen.getWidth(), posicion.y + imagen.getWidth());
-        velocidadJugador = 350;
+        this.velocidadJugador=velocidadJugador;
+    }
+
+    public void dibujar(Canvas c){
+        c.drawBitmap(imagen,posicion.x,posicion.y,null);
     }
 
     public RectF getRect() {
         return contenedor;
     }
-
-//    // Cambiar el movim
-//    public void setMovementState(int state){
-//        jugadorMoviendo = state;
-//    }
-//
-//    // Actualizacion del movimiento
-//    public void actualizarFisica(long fps){
-//        if(jugadorMoviendo == izquierda){
-//            x = x - velocidadJugador / fps;
-//        }
-//        if(jugadorMoviendo == derecha){
-//            x = x + velocidadJugador / fps;
-//        }
-//        contenedor.left = x;
-//        contenedor.right = x + ancho;
-//    }
 
     public void moverNave(int direccion) {
         switch (direccion) {
@@ -61,3 +46,4 @@ public class Jugador {
 
 
     }
+}
