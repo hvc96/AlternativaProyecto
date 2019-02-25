@@ -34,7 +34,6 @@ public class Ladrillo {
         return this.contenedor;
     }
 
-    public void construirLadrillos(int columnas, int filas) {
-
     }
-}
+
+
