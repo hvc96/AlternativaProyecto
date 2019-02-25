@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
@@ -23,8 +24,7 @@ public class Ladrillo {
 
 
     public Ladrillo(float x, float y, Bitmap imagen) {
-        paint= new Paint();
-        paint.setColor(Color.MAGENTA);
+        paint = new Paint();
         this.posicion = new PointF(x, y);
         this.imagen = imagen;
         contenedor = new RectF(posicion.x, posicion.y, posicion.x + imagen.getWidth(), posicion.y + imagen.getHeight());
@@ -49,8 +49,8 @@ public class Ladrillo {
 
     public void dibujar(Canvas c) {
         for (Ladrillo l : alLadrillos) {
-                c.drawRect(l.contenedor.left, l.contenedor.top, l.contenedor.right, l.contenedor.bottom, paint);
-                c.drawBitmap(l.imagen, l.posicion.x, l.posicion.y, null);
+            c.drawRect(l.contenedor.left, l.contenedor.top, l.contenedor.right, l.contenedor.bottom, paint);
+            c.drawBitmap(l.imagen, l.posicion.x, l.posicion.y, null);
         }
     }
 
@@ -62,10 +62,21 @@ public class Ladrillo {
             }
             Ladrillo ladrillo = new Ladrillo(posicion.x, posicion.y, imagen);
             alLadrillos.add(ladrillo);
-            posicion.x+=imagen.getWidth();
+            posicion.x += imagen.getWidth();
             cont++;
-            Log.i("ladrillo", "" + alLadrillos.size() + "----------------------" + cont);
+
         }
+    }
+
+    public void colisionaLadrillos(RectF bolita,Bitmap imagen) {
+        for (Ladrillo l : alLadrillos) {
+            if (bolita.intersect(l.getRect())){
+                l.imagen= imagen;
+                Log.i("ladrillo", "CHOQUIASTE WEOOOOOOOOOOOOOOOOOOOOOOOON");
+            }
+        }
+
+
     }
 }
 

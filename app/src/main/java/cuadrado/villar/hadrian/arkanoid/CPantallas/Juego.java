@@ -79,6 +79,7 @@ public class Juego extends Escena {
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
         ladrillo.actualizarFisica(25);
+        ladrillo.colisionaLadrillos(bola.getContenedor(),ladrilloImagenAmarilloRompiendo);
         switch (movimiento) {
             case 1:
                 if (pulsandoIzquierda) jugador.moverJugador(1);
