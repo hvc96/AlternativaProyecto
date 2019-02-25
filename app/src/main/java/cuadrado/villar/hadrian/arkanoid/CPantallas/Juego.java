@@ -8,6 +8,8 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
+
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Jugador;
@@ -22,7 +24,7 @@ public class Juego extends Escena {
     Jugador jugador;
     Bitmap jugadorImagen, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAzulOscuro, ladrilloImagenMarron, ladrilloImagenAzul, ladrilloImagenNaranja, ladrilloImagenOscuro, ladrilloImagenRojo, ladrilloImagenVerde, ladrilloImagenVerdeLima, ladrilloImagenVioleta, ladrilloImagenAmarilloRompiendo, ladrilloImagenAzulRompiendo, ladrilloImagenAzulOscuroRompiendo, ladrilloImagenMarronRompiendo, ladrilloImagenNaranjaRompiendo, ladrilloImagenOscuroRompiendo, ladrilloImagenRojoRompiendo, ladrilloImagenVerdeRompiendo, ladrilloImagenVerdeLimaRompiendo, ladrilloImagenVioletaRompiendo;
     float velocidadJugador = 10, velocidadBolaX = 25, velocidadBolaY = 15;
-    Ladrillo Ladrillos[][];
+    Ladrillo ladrillo;
 
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
@@ -38,10 +40,10 @@ public class Juego extends Escena {
         bolaImagen = Bitmap.createScaledBitmap(bolaImagen, getDp(15), getDp(15), false);
         bola = new Bola(bolaImagen, anchoPantalla / 2, altoPantalla - getDp(55), velocidadBolaX, velocidadBolaY);
 
-        Ladrillos = new Ladrillo[fila][columna];
-
         //Ladrillos normales
         ladrilloImagenAmarillo = getBitmapFromAssets("Ladrillos/Normales/ladrillo_amarillo.png");
+        ladrilloImagenAmarillo = Bitmap.createScaledBitmap(ladrilloImagenAmarillo, getDp(80), getDp(20), false);
+
         ladrilloImagenAzul = getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul.png");
         ladrilloImagenAzulOscuro = getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul_oscuro.png");
         ladrilloImagenMarron = getBitmapFromAssets("Ladrillos/Normales/ladrillo_marron.png");
@@ -63,16 +65,20 @@ public class Juego extends Escena {
         ladrilloImagenVerdeRompiendo = getBitmapFromAssets("Ladrillos/Normales/ladrillo_verde_rompiendo.png");
         ladrilloImagenVerdeLimaRompiendo = getBitmapFromAssets("Ladrillos/Normales/ladrillo_verde_lima_rompiendo.png");
         ladrilloImagenVioletaRompiendo = getBitmapFromAssets("Ladrillos/Normales/ladrillo:violeta_rompiendo.png");
-    }
 
-
-    public void construirLadrillos() {
-        //dependiendo del nivel tienen 1 o 2 hits
+        ladrillo = new Ladrillo(0, 0, ladrilloImagenAmarillo);
+        //Instanciar ladrillos
+//        Ladrillos = new Ladrillo[fila][columna];
+        //ladrillo= new Ladrillo(fila,columna,ladrilloImagenAmarillo.getHeight(),ladrilloImagenAmarillo.getWidth(),ladrilloImagenAmarillo);
+        //dibujarLadrillos(c);
+        //Construir ladrillos
+        //construirLadrillos(fila, columna);
     }
 
 
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
+        ladrillo.actualizarFisica(25);
         switch (movimiento) {
             case 1:
                 if (pulsandoIzquierda) jugador.moverJugador(1);
@@ -103,13 +109,24 @@ public class Juego extends Escena {
     public void dibujar(Canvas c) {
         try {
             c.drawColor(Color.BLACK); // Establecemos un color de fondo. En este caso negro
+            //dibujarLadrillos(c);
             jugador.dibujar(c);
             bola.dibujar(c);
+            ladrillo.dibujar(c);
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
         }
     }
 
+//    public void dibujarLadrillos(Canvas c) {
+//        for (int i = 0; i < fila; i++) {
+//            for (int j = 0; j < columna; j++) {
+//                Ladrillos[i][j] = new Ladrillo(i, j, ladrilloImagenAmarillo);
+//                Ladrillos[i][j].dibujar(c);
+//                Log.i("whynot", "Ni idea" + Ladrillos + "        " + i + "          " + j);
+//            }
+//        }
+//    }
 
     public int onTouchEvent(MotionEvent event) {
 
