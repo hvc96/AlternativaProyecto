@@ -37,6 +37,9 @@ public class Ladrillo {
 //                x * imagen.getWidth() + imagen.getWidth() - padding,
 //                y * imagen.getHeight() + imagen.getHeight() - padding
 //        );
+
+        // https://code.tutsplus.com/es/tutorials/android-sensors-in-depth-proximity-and-gyroscope--cms-28084
+        // Sensor movimiento (Giroscopio)
     }
 
     public void actualizarFisica(int nMax) {
