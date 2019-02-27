@@ -12,19 +12,23 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class Ladrillo {
-    ArrayList<Ladrillo> alLadrillos = new ArrayList<>();
+
     RectF contenedor;
     float x, y;
     public Bitmap imagen;
     public PointF posicion;
     public Paint paint;
-    public int cont = 0, cont2 = 0;
+    public int cont2 = 0;
+    int numImpactos=2;
     //public int columna, fila;
     //public Ladrillo[][] nivel = new Ladrillo[fila][columna];
 
 
     public Ladrillo(float x, float y, Bitmap imagen) {
         paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
         this.posicion = new PointF(x, y);
         this.imagen = imagen;
         contenedor = new RectF(posicion.x, posicion.y, posicion.x + imagen.getWidth(), posicion.y + imagen.getHeight());
@@ -43,7 +47,7 @@ public class Ladrillo {
     }
 
     public void actualizarFisica(int nMax) {
-        creaLadrillos(nMax);
+
     }
 
     public RectF getRect() {
@@ -51,37 +55,27 @@ public class Ladrillo {
     }
 
     public void dibujar(Canvas c) {
-        for (Ladrillo l : alLadrillos) {
-            c.drawRect(l.contenedor.left, l.contenedor.top, l.contenedor.right, l.contenedor.bottom, paint);
-            c.drawBitmap(l.imagen, l.posicion.x, l.posicion.y, null);
-        }
+//        Log.i("ladri",contenedor.left+" "+ contenedor.top+" "+  contenedor.right+" "+  contenedor.bottom);
+        c.drawBitmap(imagen, posicion.x, posicion.y, null);
+        c.drawRect(contenedor, paint);
+
+
     }
 
-    public void creaLadrillos(int nMax) {
-        if (cont < nMax) {
-            if (cont % 5 == 0) {
-                posicion.y += imagen.getHeight();
-                posicion.x = 0;
-            }
-            Ladrillo ladrillo = new Ladrillo(posicion.x, posicion.y, imagen);
-            alLadrillos.add(ladrillo);
-            posicion.x += imagen.getWidth();
-            cont++;
-
-        }
+    public int getNumImpactos() {
+        return numImpactos;
     }
 
-    public void colisionaLadrillos(RectF bolita,Bitmap imagen) {
-        for (Ladrillo l : alLadrillos) {
-            if (bolita.intersect(l.getRect())){
-                l.imagen= imagen;
-                Log.i("ladrillo", "CHOQUIASTE WEOOOOOOOOOOOOOOOOOOOOOOOON");
+    public boolean colisionaLadrillos(Bola bola, Bitmap imagen) {
+//        for (Ladrillo l : alLadrillos) {
+
+            if (bola.getContenedor().intersect(contenedor) && bola.isRestaChoque()) {
+                bola.setRestaChoque(false);
+              numImpactos--;
+              this.imagen=imagen;
+                return true;
             }
-        }
 
-
+        return false;
     }
 }
-
-
-
