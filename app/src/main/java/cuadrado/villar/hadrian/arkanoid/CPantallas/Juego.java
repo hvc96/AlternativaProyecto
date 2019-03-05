@@ -6,6 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -19,23 +23,50 @@ import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Jugador;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Ladrillo;
 
+import static android.content.Context.SENSOR_SERVICE;
+
 public class Juego extends Escena {
     float dedoCoordX, dedoCoordY;
     int movimiento, tiempoVibracion, vidas, idEscenaJuego;
-    ;
-    boolean pulsandoIzquierda, pulsandoDerecha, reseteado = false, perder = false;
+    boolean pulsandoIzquierda, pulsandoDerecha,moverDerechaGiroscopio,moverIzquierdaGiroscopio, reseteado = false, perder = false;
     RectF izquierda, derecha;
     Bola bola;
+    long tiempo;
     Jugador jugador;
-    Bitmap jugadorImagen, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAzulOscuro, ladrilloImagenMarron, ladrilloImagenAzul, ladrilloImagenNaranja, ladrilloImagenOscuro, ladrilloImagenRojo, ladrilloImagenVerde, ladrilloImagenVerdeLima, ladrilloImagenVioleta, ladrilloImagenAmarilloRompiendo, ladrilloImagenAzulRompiendo, ladrilloImagenAzulOscuroRompiendo, ladrilloImagenMarronRompiendo, ladrilloImagenNaranjaRompiendo, ladrilloImagenOscuroRompiendo, ladrilloImagenRojoRompiendo, ladrilloImagenVerdeRompiendo, ladrilloImagenVerdeLimaRompiendo, ladrilloImagenVioletaRompiendo, vidaImagen;
+    Bitmap jugadorImagen1, jugadorImagen2, jugadorImagen3, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAzulOscuro, ladrilloImagenMarron, ladrilloImagenAzul, ladrilloImagenNaranja, ladrilloImagenOscuro, ladrilloImagenRojo, ladrilloImagenVerde, ladrilloImagenVerdeLima, ladrilloImagenVioleta, ladrilloImagenAmarilloRompiendo, ladrilloImagenAzulRompiendo, ladrilloImagenAzulOscuroRompiendo, ladrilloImagenMarronRompiendo, ladrilloImagenNaranjaRompiendo, ladrilloImagenOscuroRompiendo, ladrilloImagenRojoRompiendo, ladrilloImagenVerdeRompiendo, ladrilloImagenVerdeLimaRompiendo, ladrilloImagenVioletaRompiendo, vidaImagen;
     float velocidadJugador = 10, velocidadBolaX = 25, velocidadBolaY = 15;
     Paint pTextoblanco, pBarra;
     ArrayList<Ladrillo> ladrillos;
     Vibrator vibrador = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+    Sensor giroscopio;
+    SensorManager sm;
+
+// Create a listener
+    SensorEventListener gyroscopeSensorListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            // More code goes here
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int i) {
+        }
+    };
+
+
+
+
 
 
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
+
+        sm = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        giroscopio = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+        // Register the listener
+        sm.registerListener(gyroscopeSensorListener,
+                giroscopio, SensorManager.SENSOR_DELAY_NORMAL);
 
         pTextoblanco = new Paint();
         pTextoblanco.setColor(Color.WHITE);
@@ -49,9 +80,14 @@ public class Juego extends Escena {
         izquierda = new RectF(0, 0, anchoPantalla / 2, altoPantalla);
         derecha = new RectF(anchoPantalla / 2, 0, anchoPantalla, altoPantalla);
 
-        jugadorImagen = getBitmapFromAssets("Jugador/jugador_moviendose_1.png");
-        jugadorImagen = Bitmap.createScaledBitmap(jugadorImagen, getDp(100), getDp(30), false);
-        jugador = new Jugador(jugadorImagen, anchoPantalla / 2-jugadorImagen.getWidth()/2, altoPantalla - getDp(30), velocidadJugador, anchoPantalla);
+        jugadorImagen1 = getBitmapFromAssets("Jugador/jugador_moviendose_1.png");
+        jugadorImagen1 = Bitmap.createScaledBitmap(jugadorImagen1, getDp(100), getDp(30), false);
+        jugadorImagen2 = getBitmapFromAssets("Jugador/jugador_moviendose_2.png");
+        jugadorImagen2 = Bitmap.createScaledBitmap(jugadorImagen2, getDp(100), getDp(30), false);
+        jugadorImagen3 = getBitmapFromAssets("Jugador/jugador_moviendose_3.png");
+        jugadorImagen3 = Bitmap.createScaledBitmap(jugadorImagen3, getDp(100), getDp(30), false);
+
+        jugador = new Jugador(jugadorImagen1, anchoPantalla / 2 - jugadorImagen1.getWidth() / 2, altoPantalla - getDp(30), velocidadJugador, anchoPantalla);
 
         bolaImagen = getBitmapFromAssets("Bola/bola.png");
         bolaImagen = Bitmap.createScaledBitmap(bolaImagen, getDp(15), getDp(15), false);
@@ -106,6 +142,8 @@ public class Juego extends Escena {
         vidaImagen = getBitmapFromAssets("Jugador/Vida/vida.png");
         vidaImagen = Bitmap.createScaledBitmap(vidaImagen, altoPantalla / 20, altoPantalla / 20, false);
         ladrillos = creaLadrillos(25);
+
+        tiempo = System.currentTimeMillis();
     }
 
 
@@ -132,25 +170,54 @@ public class Juego extends Escena {
     public void actualizarFisica() {
         jugarOtraVez();
 
+        Log.i("giroscopio","   izquierda "+moverIzquierdaGiroscopio+"   ----------    derecha "+moverDerechaGiroscopio);
+
+        Log.i("tiempito", "es divisble?   " + (System.currentTimeMillis() - tiempo % 2 == 0) +"     "+System.currentTimeMillis()+"        "+tiempo+"          "+"wtf  "+ (System.currentTimeMillis() - tiempo));
+        if (System.currentTimeMillis() - tiempo % 2 > 0) {
+            jugador.imagen = jugadorImagen1;
+            Log.i("entre1","                   "+jugador.imagen);
+        } else if (System.currentTimeMillis() - tiempo % 5 > 0) {
+            jugador.imagen = jugadorImagen2;
+            Log.i("entre2","        !!"+jugador.imagen);
+        } else {
+            jugador.imagen = jugadorImagen3;
+            Log.i("entre3"," "+jugador.imagen);
+        }
+
+
         for (int i = ladrillos.size() - 1; i >= 0; i--) {
             if (ladrillos.get(i).colisionaLadrillos(bola, ladrilloImagenAmarilloRompiendo)) {
 //                bola.reverseXVelocity();
-                bola.reverseYVelocity();
+                bola.reverseYVelocity();  //Ahora solo rebota hacia abajo, no tiene colisiones laterales
                 if (ladrillos.get(i).getNumImpactos() <= 0) ladrillos.remove(i);
             }
         }
         switch (movimiento) {
             case 1:
-                if (pulsandoIzquierda) jugador.moverJugador(1);
-                pulsandoDerecha = false;
+                if (pulsandoIzquierda||moverIzquierdaGiroscopio) {
+                    jugador.moverJugador(1);
+                    pulsandoDerecha = false;
+//                    moverIzquierdaGiroscopio=false;
+                }
                 break;
             case 2:
-                if (pulsandoDerecha) jugador.moverJugador(2);
-                pulsandoIzquierda = false;
+                if (pulsandoDerecha||moverDerechaGiroscopio) {
+                    jugador.moverJugador(2);
+                    pulsandoIzquierda = false;
+//                    moverDerechaGiroscopio=false;
+                }
                 break;
         }
         bola.actualizarFisica(60);
         bola.limites(anchoPantalla);
+
+        if (jugador.ed.contains(bola.contenedor)&&bola.contenedor.top==anchoPantalla){
+            bola.setVelocidadX(-15);
+        }
+
+        if (jugador.ei.contains(bola.contenedor)&&bola.contenedor.left==0){
+            bola.setVelocidadX(15);
+        }
 
         if (bola.getContenedor().top > altoPantalla / 2) bola.setRestaChoque(true);
 
@@ -187,8 +254,8 @@ public class Juego extends Escena {
             }
         }
 
-        if (vidas==0){
-            perder=true;
+        if (vidas == 0) {
+            perder = true;
         }
 
         if (bola.getContenedor().bottom > altoPantalla) {
@@ -227,8 +294,10 @@ public class Juego extends Escena {
         int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
+        detectRotation(event);
+
         switch (accion) {
-            case MotionEvent.ACTION_DOWN:           // Primer dedo toca
+            case MotionEvent.ACTION_DOWN:           // Primer dedo toca././
                 dedoCoordX = event.getX();
                 dedoCoordY = event.getY();
                 if (izquierda.contains(dedoCoordX, dedoCoordY)) {
@@ -240,6 +309,8 @@ public class Juego extends Escena {
                     movimiento = 2;// Mover derecha
                     jugador.moverJugador(2);
                 }
+
+
                 if (reseteado) {
                     resetVelocidad();
                     reseteado = false;
@@ -265,7 +336,7 @@ public class Juego extends Escena {
 //        int idPadre = super.onTouchEvent(event);
 //        if (idPadre != idEscena) return idPadre;
 
-       return -123;//No cambia porque no existe este caso
+        return -123;//No cambia porque no existe este caso
     }
 
 
@@ -281,8 +352,8 @@ public class Juego extends Escena {
     public void resetPosicion() {
         bola.posicion.x = anchoPantalla / 2;
         bola.posicion.y = altoPantalla - getDp(55);
-        jugador.posicion.x = anchoPantalla / 2-jugadorImagen.getWidth()/2;
-        jugador.posicion.y = altoPantalla -getDp(30);
+        jugador.posicion.x = anchoPantalla / 2 - jugadorImagen1.getWidth() / 2;
+        jugador.posicion.y = altoPantalla - getDp(30);
         jugador.actualizarRects();
         bola.setVelocidadX(0);
         bola.setVelocidadY(0);
@@ -312,4 +383,16 @@ public class Juego extends Escena {
         }
     }
 
+
+    public void detectRotation(SensorEvent event) {
+        if (event.values[2] > 0.5f) { // anticlockwise
+            //Mover izquierda
+            moverIzquierdaGiroscopio=true;
+            moverDerechaGiroscopio=false;
+        } else if (event.values[2] < -0.5f) { // clockwise
+            //Mover derecha
+            moverDerechaGiroscopio=true;
+            moverIzquierdaGiroscopio=false;
+        }
+    }
 }

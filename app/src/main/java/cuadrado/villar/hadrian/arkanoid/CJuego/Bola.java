@@ -91,7 +91,7 @@ public class Bola {
 
     public void limites(int anchoPantalla) {
         if (contenedor.right > anchoPantalla || contenedor.left < 0) reverseXVelocity();
-        if (contenedor.top < altoPantalla/20) reverseYVelocity();
+        if (contenedor.top < altoPantalla / 20 + getDp(20)) reverseYVelocity();
     }
 
     public float getVelocidadX() {
@@ -114,4 +114,12 @@ public class Bola {
         this.contenedor = contenedor;
     }
 
+    public int getDp(int pixels) {
+        /**
+         * Calculo de las coordenada y en relacion al una pantalla de 1208x775
+         * @param pixels coordenada en pixses en realcion a una pantalla de 1208x775
+         * @return coordenada adaptada a la resolucion del dispositivo
+         */
+        return (int) ((pixels / 7.75) * altoPantalla) / 100;
+    }
 }
