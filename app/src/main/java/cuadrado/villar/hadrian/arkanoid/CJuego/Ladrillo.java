@@ -20,8 +20,7 @@ public class Ladrillo {
     public Paint paint;
     public int cont2 = 0;
     int numImpactos=2;
-    //public int columna, fila;
-    //public Ladrillo[][] nivel = new Ladrillo[fila][columna];
+
 
 
     public Ladrillo(float x, float y, Bitmap imagen) {
@@ -32,18 +31,6 @@ public class Ladrillo {
         this.posicion = new PointF(x, y);
         this.imagen = imagen;
         contenedor = new RectF(posicion.x, posicion.y, posicion.x + imagen.getWidth(), posicion.y + imagen.getHeight());
-
-        int padding = 2;
-
-//        contenedor = new RectF(
-//                x * imagen.getWidth() + padding,
-//                y * imagen.getHeight() + padding,
-//                x * imagen.getWidth() + imagen.getWidth() - padding,
-//                y * imagen.getHeight() + imagen.getHeight() - padding
-//        );
-
-        // https://code.tutsplus.com/es/tutorials/android-sensors-in-depth-proximity-and-gyroscope--cms-28084
-        // Sensor movimiento (Giroscopio)
     }
 
     public void actualizarFisica(int nMax) {
@@ -55,7 +42,6 @@ public class Ladrillo {
     }
 
     public void dibujar(Canvas c) {
-//        Log.i("ladri",contenedor.left+" "+ contenedor.top+" "+  contenedor.right+" "+  contenedor.bottom);
         c.drawBitmap(imagen, posicion.x, posicion.y, null);
         c.drawRect(contenedor, paint);
 
@@ -67,8 +53,6 @@ public class Ladrillo {
     }
 
     public boolean colisionaLadrillos(Bola bola, Bitmap imagen) {
-//        for (Ladrillo l : alLadrillos) {
-
             if (bola.getContenedor().intersect(contenedor) && bola.isRestaChoque()) {
                 bola.setRestaChoque(false);
               numImpactos--;

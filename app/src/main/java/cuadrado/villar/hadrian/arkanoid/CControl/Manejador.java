@@ -8,6 +8,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import cuadrado.villar.hadrian.arkanoid.CPantallas.Ayuda;
+import cuadrado.villar.hadrian.arkanoid.CPantallas.Creditos;
 import cuadrado.villar.hadrian.arkanoid.CPantallas.Juego;
 import cuadrado.villar.hadrian.arkanoid.CPantallas.Menu;
 import cuadrado.villar.hadrian.arkanoid.CPantallas.Opciones;
@@ -55,13 +56,13 @@ public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
                     case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                         switch (codEscena) {
                             case 0:
-                                escenaActual = new Escena(context, 0, anchoPantalla, altoPantalla);
+                                escenaActual = new Menu(context, 0, anchoPantalla, altoPantalla);
                                 break;
                             case 10:
                                 escenaActual = new Ayuda(context, 10, anchoPantalla, altoPantalla);
                                 break;
                             case 20:
-                                escenaActual = new Escena(context, 20, anchoPantalla, altoPantalla);
+                                escenaActual = new Creditos(context, 20, anchoPantalla, altoPantalla);
                                 break;
                             case 30:
                                 escenaActual = new Opciones(context, 30, anchoPantalla, altoPantalla);

@@ -6,6 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -18,38 +21,46 @@ import cuadrado.villar.hadrian.arkanoid.CJuego.Ladrillo;
 
 public class Juego extends Escena {
     float dedoCoordX, dedoCoordY;
-    int movimiento;
-    boolean pulsandoIzquierda, pulsandoDerecha, reseteado = false, perderVida = false;
+    int movimiento, tiempoVibracion, vidas, idEscenaJuego;
+    ;
+    boolean pulsandoIzquierda, pulsandoDerecha, reseteado = false, perder = false;
     RectF izquierda, derecha;
     Bola bola;
     Jugador jugador;
     Bitmap jugadorImagen, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAzulOscuro, ladrilloImagenMarron, ladrilloImagenAzul, ladrilloImagenNaranja, ladrilloImagenOscuro, ladrilloImagenRojo, ladrilloImagenVerde, ladrilloImagenVerdeLima, ladrilloImagenVioleta, ladrilloImagenAmarilloRompiendo, ladrilloImagenAzulRompiendo, ladrilloImagenAzulOscuroRompiendo, ladrilloImagenMarronRompiendo, ladrilloImagenNaranjaRompiendo, ladrilloImagenOscuroRompiendo, ladrilloImagenRojoRompiendo, ladrilloImagenVerdeRompiendo, ladrilloImagenVerdeLimaRompiendo, ladrilloImagenVioletaRompiendo, vidaImagen;
     float velocidadJugador = 10, velocidadBolaX = 25, velocidadBolaY = 15;
-//    Ladrillo ladrillo;
-    Paint pTextoblanco;
+    Paint pTextoblanco, pBarra;
     ArrayList<Ladrillo> ladrillos;
+    Vibrator vibrador = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+
 
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
-        pTextoblanco= new Paint();
+        pTextoblanco = new Paint();
         pTextoblanco.setColor(Color.WHITE);
         pTextoblanco.setTextSize(getDp(40));
+
+        pBarra = new Paint();
+        pBarra.setColor(Color.LTGRAY);
+
+        vidas = 2;
 
         izquierda = new RectF(0, 0, anchoPantalla / 2, altoPantalla);
         derecha = new RectF(anchoPantalla / 2, 0, anchoPantalla, altoPantalla);
 
         jugadorImagen = getBitmapFromAssets("Jugador/jugador_moviendose_1.png");
         jugadorImagen = Bitmap.createScaledBitmap(jugadorImagen, getDp(100), getDp(30), false);
-        jugador = new Jugador(jugadorImagen, anchoPantalla / 2, altoPantalla - getDp(30), velocidadJugador, anchoPantalla);
+        jugador = new Jugador(jugadorImagen, anchoPantalla / 2-jugadorImagen.getWidth()/2, altoPantalla - getDp(30), velocidadJugador, anchoPantalla);
 
         bolaImagen = getBitmapFromAssets("Bola/bola.png");
         bolaImagen = Bitmap.createScaledBitmap(bolaImagen, getDp(15), getDp(15), false);
-        bola = new Bola(bolaImagen, anchoPantalla / 2, altoPantalla - getDp(55), velocidadBolaX, velocidadBolaY);
+        bola = new Bola(bolaImagen, anchoPantalla / 2, altoPantalla - getDp(55), velocidadBolaX, velocidadBolaY, altoPantalla);
 
         //Ladrillos normales
+
         ladrilloImagenAmarillo = getBitmapFromAssets("Ladrillos/Normales/ladrillo_amarillo.png");
-        ladrilloImagenAmarillo = Bitmap.createScaledBitmap(ladrilloImagenAmarillo, getDp(80), getDp(20), false);
+        ladrilloImagenAmarillo = Bitmap.createScaledBitmap(ladrilloImagenAmarillo, anchoPantalla / 5, altoPantalla / 30, false);
         ladrilloImagenAzul = getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul.png");
         ladrilloImagenAzul = Bitmap.createScaledBitmap(ladrilloImagenAzul, getDp(80), getDp(20), false);
         ladrilloImagenAzulOscuro = getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul_oscuro.png");
@@ -71,7 +82,7 @@ public class Juego extends Escena {
 
         //Ladrillos rompiendose
         ladrilloImagenAmarilloRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_amarillo_rompiendo.png");
-        ladrilloImagenAmarilloRompiendo = Bitmap.createScaledBitmap(ladrilloImagenAmarilloRompiendo, getDp(80), getDp(20), false);
+        ladrilloImagenAmarilloRompiendo = Bitmap.createScaledBitmap(ladrilloImagenAmarilloRompiendo, anchoPantalla / 5, altoPantalla / 30, false);
         ladrilloImagenAzulRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_azul_rompiendo.png");
         ladrilloImagenAzulRompiendo = Bitmap.createScaledBitmap(ladrilloImagenAzulRompiendo, getDp(80), getDp(20), false);
         ladrilloImagenAzulOscuroRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_azul_oscuro_rompiendo.png");
@@ -91,26 +102,24 @@ public class Juego extends Escena {
         ladrilloImagenVioletaRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_violeta_rompiendo.png");
         ladrilloImagenVioletaRompiendo = Bitmap.createScaledBitmap(ladrilloImagenVioletaRompiendo, getDp(80), getDp(20), false);
 
-//        ladrillo = new Ladrillo(0, 0, ladrilloImagenAmarillo);
-
         //Vida
         vidaImagen = getBitmapFromAssets("Jugador/Vida/vida.png");
-        vidaImagen = Bitmap.createScaledBitmap(vidaImagen, getDp(100), getDp(100), false);
-        ladrillos=creaLadrillos(25);
+        vidaImagen = Bitmap.createScaledBitmap(vidaImagen, altoPantalla / 20, altoPantalla / 20, false);
+        ladrillos = creaLadrillos(25);
     }
 
 
-    public  ArrayList<Ladrillo> creaLadrillos(int nMax) {
+    public ArrayList<Ladrillo> creaLadrillos(int nMax) {
         ArrayList<Ladrillo> alLadrillos = new ArrayList<>();
         int cont = 0;
-
-        int y=0,x=0;
+// Empieza en 40 porque son para botones vidas etc
+        int y = altoPantalla / 20, x = 0;
         for (int i = 0; i < nMax; i++) {
             if (cont % 5 == 0) {
                 y += ladrilloImagenAmarillo.getHeight();
                 x = 0;
             }
-            Ladrillo ladrillo = new Ladrillo(x,y, ladrilloImagenAmarillo);
+            Ladrillo ladrillo = new Ladrillo(x, y, ladrilloImagenAmarillo);
             alLadrillos.add(ladrillo);
             x += ladrilloImagenAmarillo.getWidth();
             cont++;
@@ -121,18 +130,14 @@ public class Juego extends Escena {
 
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
-//        ladrillo.actualizarFisica(25);
+        jugarOtraVez();
 
-        for (int i = ladrillos.size()-1; i >=0; i--) {
+        for (int i = ladrillos.size() - 1; i >= 0; i--) {
             if (ladrillos.get(i).colisionaLadrillos(bola, ladrilloImagenAmarilloRompiendo)) {
 //                bola.reverseXVelocity();
-            bola.reverseYVelocity();
-                if (ladrillos.get(i).getNumImpactos()<=0) ladrillos.remove(i);
+                bola.reverseYVelocity();
+                if (ladrillos.get(i).getNumImpactos() <= 0) ladrillos.remove(i);
             }
-
-
-
-//
         }
         switch (movimiento) {
             case 1:
@@ -147,19 +152,14 @@ public class Juego extends Escena {
         bola.actualizarFisica(60);
         bola.limites(anchoPantalla);
 
-        if (bola.getContenedor().bottom > altoPantalla) {
-            perderVida = true;
-        }
-
-        resetPosicion(perderVida);
-
-        if (bola.getContenedor().top>altoPantalla/2) bola.setRestaChoque(true);
+        if (bola.getContenedor().top > altoPantalla / 2) bola.setRestaChoque(true);
 
         if (bola.getContenedor().intersect(jugador.ei)) {
             bola.setRestaChoque(true);
             Log.i("velei", " " + bola.getVelocidadX());
             if (bola.getVelocidadX() > 0) {
                 bola.reverseYVelocity();
+                bola.setVelocidadY(velocidadBolaY + 1);
             } else {
                 bola.reverseYVelocity();
                 bola.reverseXVelocity();
@@ -181,10 +181,24 @@ public class Juego extends Escena {
             if (bola.getVelocidadX() > 0) {
                 bola.reverseYVelocity();
                 bola.reverseXVelocity();
-
-
             } else {
                 bola.reverseYVelocity();
+                bola.setVelocidadY(velocidadBolaY + 1);
+            }
+        }
+
+        if (vidas==0){
+            perder=true;
+        }
+
+        if (bola.getContenedor().bottom > altoPantalla) {
+            perderVida();
+            resetPosicion();
+            reseteado = true;
+            if (perder) {
+                idEscenaJuego = 0;
+            } else {
+                idEscenaJuego = 100;
             }
         }
     }
@@ -192,15 +206,17 @@ public class Juego extends Escena {
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
-
             c.drawColor(Color.BLACK); // Establecemos un color de fondo. En este caso negro
+            c.drawRect(0, 0, anchoPantalla, altoPantalla / 20 + getDp(20), pBarra);
+
+            //Vidas
+            c.drawBitmap(vidaImagen, anchoPantalla - vidaImagen.getWidth() - getDp(5), getDp(5), null);
+            c.drawText(vidas + "", anchoPantalla - vidaImagen.getWidth() * 2, altoPantalla / 20, pTextoblanco);
+
             jugador.dibujar(c);
             bola.dibujar(c);
-           for (Ladrillo l:ladrillos) l.dibujar(c);
-            if (reseteado) {
-                c.drawBitmap(vidaImagen, anchoPantalla / 2-vidaImagen.getWidth()/2, altoPantalla / 2, null);
-                c.drawText("-1",anchoPantalla / 2-pTextoblanco.getTextSize()/2, altoPantalla / 2+ vidaImagen.getHeight()/2+getDp(12),pTextoblanco);
-            }
+            for (Ladrillo l : ladrillos) l.dibujar(c);
+
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
         }
@@ -224,6 +240,10 @@ public class Juego extends Escena {
                     movimiento = 2;// Mover derecha
                     jugador.moverJugador(2);
                 }
+                if (reseteado) {
+                    resetVelocidad();
+                    reseteado = false;
+                }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
@@ -232,27 +252,63 @@ public class Juego extends Escena {
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 pulsandoIzquierda = false;
                 pulsandoDerecha = false;
+                if (perder)
+                    return 0; //Vuelve al menu
                 break;
-
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
-                reseteado = false;
+
                 break;
             default:
                 Log.i("Otra acción", "Acción no definida: " + accion);
         }
 
-        int idPadre = super.onTouchEvent(event);
-        if (idPadre != idEscena) return idPadre;
+//        int idPadre = super.onTouchEvent(event);
+//        if (idPadre != idEscena) return idPadre;
 
-        return idEscena;
+       return -123;//No cambia porque no existe este caso
     }
 
-    public void resetPosicion(boolean reset) {
-        if (reset) {
-            bola.posicion.x = anchoPantalla / 2;
-            bola.posicion.y = altoPantalla - getDp(55);
-            bola.actualizarRect();
-            reseteado = true;
+
+    public void perderVida() {
+        if (vidas != 0) {
+            vidas--;
+            perder = false;
+        } else {
+            perder = true;
+        }
+    }
+
+    public void resetPosicion() {
+        bola.posicion.x = anchoPantalla / 2;
+        bola.posicion.y = altoPantalla - getDp(55);
+        jugador.posicion.x = anchoPantalla / 2-jugadorImagen.getWidth()/2;
+        jugador.posicion.y = altoPantalla -getDp(30);
+        jugador.actualizarRects();
+        bola.setVelocidadX(0);
+        bola.setVelocidadY(0);
+        bola.actualizarRect();
+    }
+
+    public int jugarOtraVez() {
+
+        if (vidas < 1) {
+            return 0; //Menu
+        }
+        return 100; //Pantalla juego
+    }
+
+    public void resetVelocidad() {
+        if (vidas > 0) {
+            bola.setVelocidadX(25);
+            bola.setVelocidadY(15);
+        }
+    }
+
+    public void vibrar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrador.vibrate(VibrationEffect.createOneShot(750, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrador.vibrate(tiempoVibracion);
         }
     }
 

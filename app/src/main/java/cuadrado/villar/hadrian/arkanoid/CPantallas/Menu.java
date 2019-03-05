@@ -39,6 +39,7 @@ public class Menu extends Escena {
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
+                Log.i("idEs","idEscena"+ getIdEscena() +"       "+idEscena);
                 break;
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo

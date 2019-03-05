@@ -86,6 +86,9 @@ public class Jugador {
 
         }
 
+        actualizarRects();
+    }
+    public void actualizarRects(){
         //Actualizar contenedores de jugador
         this.ei = new RectF(contenedor.left, contenedor.top, contenedor.left + partes, contenedor.bottom);
         this.ci = new RectF(contenedor.left + partes, contenedor.top, contenedor.left + partes * 2, contenedor.bottom);

@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 import java.util.Random;
 
+import cuadrado.villar.hadrian.arkanoid.CPantallas.Juego;
+
 public class Bola {
 
     public RectF contenedor;
@@ -21,7 +23,8 @@ public class Bola {
     public PointF posicion;
     public Paint paint;
     public boolean perdio = false, signo;
-    boolean restaChoque=true;
+    public boolean restaChoque=true;
+    public int altoPantalla;
 
     public boolean isRestaChoque() {
         return restaChoque;
@@ -31,13 +34,13 @@ public class Bola {
         this.restaChoque = restaChoque;
     }
 
-    public Bola(Bitmap imagen, float x, float y, float velocidadX, float velocidadY) {
+    public Bola(Bitmap imagen, float x, float y, float velocidadX, float velocidadY, int altoPantalla) {
         this.posicion = new PointF(x, y);
         this.imagen = imagen;
         contenedor = new RectF(posicion.x, posicion.y, posicion.x + imagen.getWidth(), posicion.y + imagen.getHeight());
         this.velocidadX = velocidadX;
         this.velocidadY = velocidadY;
-
+        this.altoPantalla=altoPantalla;
         //Para dibujar hitbox en caso de
 
         paint = new Paint();
@@ -88,7 +91,7 @@ public class Bola {
 
     public void limites(int anchoPantalla) {
         if (contenedor.right > anchoPantalla || contenedor.left < 0) reverseXVelocity();
-        if (contenedor.top < 0) reverseYVelocity();
+        if (contenedor.top < altoPantalla/20) reverseYVelocity();
     }
 
     public float getVelocidadX() {
@@ -110,4 +113,5 @@ public class Bola {
     public void setContenedor(RectF contenedor) {
         this.contenedor = contenedor;
     }
+
 }
