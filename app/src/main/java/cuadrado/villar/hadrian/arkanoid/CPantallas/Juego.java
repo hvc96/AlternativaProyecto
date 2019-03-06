@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -36,7 +37,7 @@ public class Juego extends Escena {
     Jugador jugador;
     Bitmap jugadorImagen1, jugadorImagen2, jugadorImagen3, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAzulOscuro, ladrilloImagenMarron, ladrilloImagenAzul, ladrilloImagenNaranja, ladrilloImagenOscuro, ladrilloImagenRojo, ladrilloImagenVerde, ladrilloImagenVerdeLima, ladrilloImagenVioleta, ladrilloImagenAmarilloRompiendo, ladrilloImagenAzulRompiendo, ladrilloImagenAzulOscuroRompiendo, ladrilloImagenMarronRompiendo, ladrilloImagenNaranjaRompiendo, ladrilloImagenOscuroRompiendo, ladrilloImagenRojoRompiendo, ladrilloImagenVerdeRompiendo, ladrilloImagenVerdeLimaRompiendo, ladrilloImagenVioletaRompiendo, vidaImagen;
     float velocidadJugador = 10, velocidadBolaX = 25, velocidadBolaY = 15;
-    Paint pTextoblanco, pBarra;
+    Paint pTextoblanco, pBarra, p;
     ArrayList<Ladrillo> ladrillos;
     Vibrator vibrador = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
     Sensor giroscopio;
@@ -148,6 +149,12 @@ public class Juego extends Escena {
         ladrillos = creaLadrillos(25);
 
         tiempo = System.currentTimeMillis();
+
+        Typeface faw = Typeface.createFromAsset(context.getAssets(), "Fuentes/PoiretOne-Regular.ttf");
+        p=new Paint();
+        p.setTypeface(faw);
+        p.setTextSize(getDp(60));
+        p.setColor(Color.RED);
     }
 
 
@@ -289,7 +296,8 @@ public class Juego extends Escena {
             for (Ladrillo l : ladrillos) l.dibujar(c);
 
             if (perder){
-                c.drawText(perdertxt);
+                c.drawColor(Color.BLACK);
+                c.drawText(perdertxt,anchoPantalla/2-anchoPantalla/4, altoPantalla/2,p);
             }
 
         } catch (Exception e) {
