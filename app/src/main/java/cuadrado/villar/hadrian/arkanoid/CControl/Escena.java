@@ -52,14 +52,14 @@ public class Escena {
         pBoton2 = new Paint();
         pBoton2.setColor(Color.BLACK);
 
-        botonRetroceder = getBitmapFromAssets("Bola/bola.png");
-        botonRetroceder = Bitmap.createScaledBitmap(botonRetroceder, anchoPantalla/4, altoPantalla/5, false);
+        botonRetroceder = getBitmapFromAssets("Atras/atras.png");
+        botonRetroceder = Bitmap.createScaledBitmap(botonRetroceder, getDp(100), getDp(100), false);
 
         paint = new Paint();
         paint.setColor(Color.YELLOW);
         paint.setStyle(Paint.Style.STROKE);
 
-        volverAtras = new Rect(0, 0, anchoPantalla/4, altoPantalla/5);
+        volverAtras = new Rect(0, 0, getDp(100), getDp(100));
     }
 
 

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Arkanoid</string>
+    <string name="ayuda">Help</string>
+    <string name="opciones">Options</string>
+    <string name="records">Records</string>
+    <string name="creditos">Credits</string>
+    <string name="jugar">START</string>
+    <string name="perder">You lose</string>
 </resources>

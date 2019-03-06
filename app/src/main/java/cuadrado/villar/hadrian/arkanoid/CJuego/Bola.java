@@ -61,7 +61,7 @@ public class Bola {
         return contenedor;
     }
 
-    public void actualizarFisica(long fps) {
+    public void actualizarFisica() {
         this.posicion.x = posicion.x - velocidadX;
         this.posicion.y = posicion.y - velocidadY;
         Log.i("ladri", isRestaChoque()+"");

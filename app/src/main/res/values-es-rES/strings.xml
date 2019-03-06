@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Arkanoid</string>
+    <string name="ayuda">Ayuda</string>
+    <string name="creditos">Créditos</string>
+    <string name="records">Records</string>
+    <string name="opciones">Opciones</string>
+    <string name="jugar">JUGAR</string>
+    <string name="perder">Has perdido</string>
+</resources>

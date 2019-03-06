@@ -22,6 +22,7 @@ import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Jugador;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Ladrillo;
+import cuadrado.villar.hadrian.arkanoid.R;
 
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -40,6 +41,7 @@ public class Juego extends Escena {
     Vibrator vibrador = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
     Sensor giroscopio;
     SensorManager sm;
+    String perdertxt;
 
 // Create a listener
     SensorEventListener gyroscopeSensorListener = new SensorEventListener() {
@@ -60,6 +62,8 @@ public class Juego extends Escena {
 
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
+
+        perdertxt= context.getString(R.string.perder);
 
         sm = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         giroscopio = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -208,7 +212,7 @@ public class Juego extends Escena {
                 }
                 break;
         }
-        bola.actualizarFisica(60);
+        bola.actualizarFisica();
         bola.limites(anchoPantalla);
 
         if (jugador.ed.contains(bola.contenedor)&&bola.contenedor.top==anchoPantalla){
@@ -284,6 +288,10 @@ public class Juego extends Escena {
             bola.dibujar(c);
             for (Ladrillo l : ladrillos) l.dibujar(c);
 
+            if (perder){
+                c.drawText(perdertxt);
+            }
+
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
         }
@@ -294,10 +302,10 @@ public class Juego extends Escena {
         int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
-        detectRotation(event);
+        //detectRotation(event);
 
         switch (accion) {
-            case MotionEvent.ACTION_DOWN:           // Primer dedo toca././
+            case MotionEvent.ACTION_DOWN:           // Primer dedo toca
                 dedoCoordX = event.getX();
                 dedoCoordY = event.getY();
                 if (izquierda.contains(dedoCoordX, dedoCoordY)) {
@@ -309,7 +317,6 @@ public class Juego extends Escena {
                     movimiento = 2;// Mover derecha
                     jugador.moverJugador(2);
                 }
-
 
                 if (reseteado) {
                     resetVelocidad();
@@ -343,6 +350,7 @@ public class Juego extends Escena {
     public void perderVida() {
         if (vidas != 0) {
             vidas--;
+            vibrar();
             perder = false;
         } else {
             perder = true;
@@ -377,7 +385,7 @@ public class Juego extends Escena {
 
     public void vibrar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrador.vibrate(VibrationEffect.createOneShot(750, VibrationEffect.DEFAULT_AMPLITUDE));
+            vibrador.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
             vibrador.vibrate(tiempoVibracion);
         }
