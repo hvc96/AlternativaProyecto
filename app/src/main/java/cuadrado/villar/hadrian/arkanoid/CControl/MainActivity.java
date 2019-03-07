@@ -8,7 +8,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import cuadrado.villar.hadrian.arkanoid.CPantallas.Menu;
+
+import static cuadrado.villar.hadrian.arkanoid.CControl.Escena.prefs;
+
 public class MainActivity extends AppCompatActivity {
+
+    Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,4 +39,17 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        if (prefs.getBoolean("play",true))
+//        menu.mediaPlayer.pause();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        if (prefs.getBoolean("play",true))
+//            menu.mediaPlayer.start();
+    }
+
 }

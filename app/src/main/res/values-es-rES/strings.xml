@@ -7,4 +7,6 @@
     <string name="opciones">Opciones</string>
     <string name="jugar">JUGAR</string>
     <string name="perder">Has perdido</string>
+    <string name="ganar">Has ganado</string>
+    <string name="agradecimientos">Agradecimientos</string>
 </resources>

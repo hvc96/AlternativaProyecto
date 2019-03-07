@@ -96,4 +96,9 @@ public class Jugador {
         this.cd = new RectF(contenedor.left + partes * 3, contenedor.top, contenedor.left + partes * 4, contenedor.bottom);
         this.ed = new RectF(contenedor.left + partes * 4, contenedor.top, contenedor.right, contenedor.bottom);
     }
+
+    public void moverJugadorGiroscopio(float nuevaPosX){
+        this.posicion.x=nuevaPosX-imagen.getWidth()/2;
+        this.actualizarRects();
+    }
 }

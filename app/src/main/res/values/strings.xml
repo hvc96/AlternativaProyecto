@@ -6,4 +6,9 @@
     <string name="creditos">Credits</string>
     <string name="jugar">START</string>
     <string name="perder">You lose</string>
+    <string name="ganar">You win</string>
+    <string name="agradecimientos">Special thanks</string>
+    <string name="genteAgradecimientosAmigos1" translatable="false">"Lucas Alonso, Victor León, José Villar, "</string>
+    <string name="genteAgradecimientosAmigos2" translatable="false">David Alonso,Vanessa Cuartiella</string>
+    <string name="genteAgradecimientoProfesores" translatable="false">Mila Ausin, Javier Conde</string>
 </resources>

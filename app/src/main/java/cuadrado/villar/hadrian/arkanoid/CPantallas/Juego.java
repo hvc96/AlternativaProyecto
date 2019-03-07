@@ -15,6 +15,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -24,6 +26,7 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import cuadrado.villar.hadrian.arkanoid.CControl.Audio;
 import cuadrado.villar.hadrian.arkanoid.CControl.BaseDatos;
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
@@ -36,30 +39,35 @@ import static android.content.Context.SENSOR_SERVICE;
 public class Juego extends Escena {
     float dedoCoordX, dedoCoordY;
     int movimiento, tiempoVibracion, vidas, idEscenaJuego, pts, indice;
-    boolean pulsandoIzquierda, pulsandoDerecha, moverDerechaGiroscopio, moverIzquierdaGiroscopio, reseteado = false, perder = false, pplay;
+    boolean pulsandoIzquierda, pulsandoDerecha, moverGiroscopio, reseteado = false, perder = false, pplay, juegoPausado = false, ganar = false, vibracion;
     RectF izquierda, derecha;
     Rect botonPlayPause;
     Bola bola;
     long tiempo;
     Jugador jugador;
-    Bitmap jugadorImagen1, jugadorImagen2, jugadorImagen3, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAmarilloRompiendo, vidaImagen, pauseImagen, playImagen, imagenJugadorDinamica;
-    float velocidadJugador = 10, velocidadBolaX = 25, velocidadBolaY = 15;
+    Bitmap jugadorImagen1,bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAmarilloRompiendo, vidaImagen, pauseImagen, playImagen;
+    float velocidadJugador = 20, velocidadBolaX = 25, velocidadBolaY = 15;
     Paint pTextoblanco, pBarra, p;
     ArrayList<Ladrillo> ladrillos;
-    Collection<Bitmap> imagenesJugador;
     Vibrator vibrador = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
     Sensor giroscopio;
     SensorManager sm;
-    String perdertxt, query;
-    BaseDatos bd;
-    SQLiteDatabase sqldb;
+    String perdertxt, ganartxt, query;
+
     Cursor c;
+    MediaPlayer mediaPlayer;
+    Audio audio;
 
     // Create a listener
     SensorEventListener gyroscopeSensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
-            // More code goes here
+            if (moverGiroscopio) {
+                float posXGiro = anchoPantalla / 2 - sensorEvent.values[0] * 100;
+                if (posXGiro >= 0 && posXGiro <= anchoPantalla) {
+                    jugador.moverJugadorGiroscopio(posXGiro);
+                }
+            }
         }
 
         @Override
@@ -74,9 +82,10 @@ public class Juego extends Escena {
         indice = 0;
         pts = 0;
         perdertxt = context.getString(R.string.perder);
+        ganartxt = context.getString(R.string.ganar);
 
         sm = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        giroscopio = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        giroscopio = sm.getDefaultSensor(Sensor.TYPE_GRAVITY);
 
         // Register the listener
         sm.registerListener(gyroscopeSensorListener,
@@ -85,6 +94,7 @@ public class Juego extends Escena {
         pTextoblanco = new Paint();
         pTextoblanco.setColor(Color.WHITE);
         pTextoblanco.setTextSize(getDp(40));
+        pTextoblanco.setTextAlign(Paint.Align.CENTER);
 
         pBarra = new Paint();
         pBarra.setColor(Color.LTGRAY);
@@ -96,10 +106,6 @@ public class Juego extends Escena {
 
         jugadorImagen1 = getBitmapFromAssets("Jugador/jugador_moviendose_1.png");
         jugadorImagen1 = Bitmap.createScaledBitmap(jugadorImagen1, getDp(100), getDp(30), false);
-//        jugadorImagen2 = getBitmapFromAssets("Jugador/jugador_moviendose_2.png");
-//        jugadorImagen2 = Bitmap.createScaledBitmap(jugadorImagen2, getDp(100), getDp(30), false);
-//        jugadorImagen3 = getBitmapFromAssets("Jugador/jugador_moviendose_3.png");
-//        jugadorImagen3 = Bitmap.createScaledBitmap(jugadorImagen3, getDp(100), getDp(30), false);
 
         jugador = new Jugador(jugadorImagen1, anchoPantalla / 2 - jugadorImagen1.getWidth() / 2, altoPantalla - getDp(30), velocidadJugador, anchoPantalla);
 
@@ -107,10 +113,16 @@ public class Juego extends Escena {
         bolaImagen = Bitmap.createScaledBitmap(bolaImagen, getDp(15), getDp(15), false);
         bola = new Bola(bolaImagen, anchoPantalla / 2, altoPantalla - getDp(55), velocidadBolaX, velocidadBolaY, altoPantalla);
 
-        if (prefs.getBoolean("play", true) == true) {
+        if (prefs.getBoolean("play", true)) {
             pplay = true;
         } else {
             pplay = false;
+        }
+
+        if (prefs.getBoolean("giroscopio", true)) {
+            moverGiroscopio = true;
+        } else {
+            moverGiroscopio = false;
         }
 
         //Ladrillos normales
@@ -143,8 +155,24 @@ public class Juego extends Escena {
         p.setColor(Color.RED);
         p.setTextAlign(Paint.Align.CENTER);
 
-        //imagenesJugador.addAll(getFrames(3,"Jugador","jugador_moviendose_",jugadorImagen1.getWidth()));
-        //imagenJugadorDinamica=cambiaFrame(3,tiempo,100,indice);
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        mediaPlayer = MediaPlayer.create(context, R.raw.canciongameplay);
+        int v = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setVolume(v / 2 * 2, v / 2 * 2);
+        mediaPlayer.setLooping(true);
+
+        if (prefs.getBoolean("musica", true)) {
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+            }
+        }
+
+        if (prefs.getBoolean("vibracion", true)) {
+            vibracion = true;
+        } else {
+            vibracion = false;
+        }
+
     }
 
 
@@ -169,107 +197,93 @@ public class Juego extends Escena {
 
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
-        jugarOtraVez();
+        if (!juegoPausado) {
+            jugarOtraVez();
 
-        Log.i("giroscopio", "   izquierda " + moverIzquierdaGiroscopio + "   ----------    derecha " + moverDerechaGiroscopio);
-        Log.i("tiempito", "es divisble?   " + (System.currentTimeMillis() - tiempo % 2 == 0) + "     " + System.currentTimeMillis() + "        " + tiempo + "          " + "wtf  " + (System.currentTimeMillis() - tiempo));
-//        if (System.currentTimeMillis() - tiempo % 2 > 0) {
-//            jugador.imagen = jugadorImagen1;
-//            Log.i("entre1", "                   " + jugador.imagen);
-//        } else if (System.currentTimeMillis() - tiempo % 5 > 0) {
-//            jugador.imagen = jugadorImagen2;
-//            Log.i("entre2", "        !!" + jugador.imagen);
-//        } else {
-//            jugador.imagen = jugadorImagen3;
-//            Log.i("entre3", " " + jugador.imagen);
-//        }
-
-
-        for (int i = ladrillos.size() - 1; i >= 0; i--) {
-            if (ladrillos.get(i).colisionaLadrillos(bola, ladrilloImagenAmarilloRompiendo)) {
+            for (int i = ladrillos.size() - 1; i >= 0; i--) {
+                if (ladrillos.get(i).colisionaLadrillos(bola, ladrilloImagenAmarilloRompiendo)) {
 //                bola.reverseXVelocity();
-                bola.reverseYVelocity();  //Ahora solo rebota hacia abajo, no tiene colisiones laterales
-                if (ladrillos.get(i).getNumImpactos() <= 0) {
-                    ladrillos.remove(i);
-                    pts++;
+                    bola.reverseYVelocity();  //Ahora solo rebota hacia abajo, no tiene colisiones laterales
+                    if (ladrillos.get(i).getNumImpactos() <= 0) {
+                        ladrillos.remove(i);
+                        pts++;
+                    }
+                    if (ladrillos.isEmpty()) {
+                        audio.getEfectos().play(audio.sVictoria, 1, 1, 1, 0, 1);
+                    }
                 }
             }
-        }
-        switch (movimiento) {
-            case 1:
-                if (pulsandoIzquierda || moverIzquierdaGiroscopio) {
-                    jugador.moverJugador(1);
-                    pulsandoDerecha = false;
-//                    moverIzquierdaGiroscopio=false;
+            if (!moverGiroscopio) {
+                switch (movimiento) {
+                    case 1:
+                        if (pulsandoIzquierda) {
+                            jugador.moverJugador(1);
+                            pulsandoDerecha = false;
+                        }
+                        break;
+                    case 2:
+                        if (pulsandoDerecha) {
+                            jugador.moverJugador(2);
+                            pulsandoIzquierda = false;
+                        }
+                        break;
                 }
-                break;
-            case 2:
-                if (pulsandoDerecha || moverDerechaGiroscopio) {
-                    jugador.moverJugador(2);
-                    pulsandoIzquierda = false;
-//                    moverDerechaGiroscopio=false;
+            }else{
+                jugador.actualizarRects();
+            }
+            bola.actualizarFisica();
+            bola.limites(anchoPantalla);
+
+            if (bola.getContenedor().top > altoPantalla / 2) bola.setRestaChoque(true);
+
+            if (bola.getContenedor().intersect(jugador.ei)) {
+                bola.setRestaChoque(true);
+                Log.i("velei", " " + bola.getVelocidadX());
+                if (bola.getVelocidadX() > 0) {
+                    bola.reverseYVelocity();
+                    bola.setVelocidadY(velocidadBolaY + 1);
+                } else {
+                    bola.reverseYVelocity();
+                    bola.reverseXVelocity();
                 }
-                break;
-        }
-        bola.actualizarFisica();
-        bola.limites(anchoPantalla);
-
-        if (jugador.ed.contains(bola.contenedor) && bola.contenedor.top == anchoPantalla) {
-            bola.setVelocidadX(-15);
-        }
-
-        if (jugador.ei.contains(bola.contenedor) && bola.contenedor.left == 0) {
-            bola.setVelocidadX(15);
-        }
-
-        if (bola.getContenedor().top > altoPantalla / 2) bola.setRestaChoque(true);
-
-        if (bola.getContenedor().intersect(jugador.ei)) {
-            bola.setRestaChoque(true);
-            Log.i("velei", " " + bola.getVelocidadX());
-            if (bola.getVelocidadX() > 0) {
+            } else if (bola.getContenedor().intersect(jugador.ci)) {
+                Log.i("velci", " " + bola.getVelocidadX());
                 bola.reverseYVelocity();
-                bola.setVelocidadY(velocidadBolaY + 1);
-            } else {
+
+            } else if (bola.getContenedor().intersect(jugador.centro)) {
+                Log.i("velcentro", " " + bola.getVelocidadX());
                 bola.reverseYVelocity();
-                bola.reverseXVelocity();
+
+            } else if (bola.getContenedor().intersect(jugador.cd)) {
+                Log.i("velcd", " " + bola.getVelocidadX());
+                bola.reverseYVelocity();
+
+            } else if (bola.getContenedor().intersect(jugador.ed)) {
+                Log.i("veled", " " + bola.getVelocidadX());
+                if (bola.getVelocidadX() > 0) {
+                    bola.reverseYVelocity();
+                    bola.reverseXVelocity();
+                } else {
+                    bola.reverseYVelocity();
+                    bola.setVelocidadY(velocidadBolaY + 1);
+                }
             }
-        } else if (bola.getContenedor().intersect(jugador.ci)) {
-            Log.i("velci", " " + bola.getVelocidadX());
-            bola.reverseYVelocity();
 
-        } else if (bola.getContenedor().intersect(jugador.centro)) {
-            Log.i("velcentro", " " + bola.getVelocidadX());
-            bola.reverseYVelocity();
-
-        } else if (bola.getContenedor().intersect(jugador.cd)) {
-            Log.i("velcd", " " + bola.getVelocidadX());
-            bola.reverseYVelocity();
-
-        } else if (bola.getContenedor().intersect(jugador.ed)) {
-            Log.i("veled", " " + bola.getVelocidadX());
-            if (bola.getVelocidadX() > 0) {
-                bola.reverseYVelocity();
-                bola.reverseXVelocity();
-            } else {
-                bola.reverseYVelocity();
-                bola.setVelocidadY(velocidadBolaY + 1);
+            if (vidas == 0) {
+                perder = true;
+                //audio.getEfectos().play(audio.sDerrota,1,1,1,0,1);
             }
-        }
 
-        if (vidas == 0) {
-            perder = true;
-        }
-
-        if (bola.getContenedor().bottom > altoPantalla) {
-            perderVida();
-            resetPosicion();
-            reseteado = true;
-            if (perder) {
+            if (bola.getContenedor().bottom > altoPantalla) {
+                perderVida();
+                resetPosicion();
+                reseteado = true;
+                if (perder || ganar) {
 //                sqldb.execSQL("INSERT INTO puntos(pts) VALUES()");
-                idEscenaJuego = 0;
-            } else {
-                idEscenaJuego = 100;
+                    idEscenaJuego = 0;
+                } else {
+                    idEscenaJuego = 100;
+                }
             }
         }
     }
@@ -290,16 +304,22 @@ public class Juego extends Escena {
             c.drawText(vidas + "", anchoPantalla - vidaImagen.getWidth() * 2, altoPantalla / 20, pTextoblanco);
 
             jugador.dibujar(c);
-//            jugador.imagen.
-
             bola.dibujar(c);
             for (Ladrillo l : ladrillos) l.dibujar(c);
 
-            if (perder) {
-                c.drawColor(Color.BLACK);
-                c.drawText(perdertxt, anchoPantalla / 2, altoPantalla / 2, p);
-            }
+            if (!juegoPausado) {
 
+                if (perder) {
+                    c.drawColor(Color.BLACK);
+                    c.drawText(perdertxt, anchoPantalla / 2, altoPantalla / 2, p);
+                    c.drawText(pts + " puntos", anchoPantalla / 2, altoPantalla / 2 + getDp(100), pTextoblanco);
+                }
+
+                if (ganar) {
+                    c.drawColor(Color.BLACK);
+                    c.drawText(ganartxt, anchoPantalla / 2, altoPantalla / 2, p);
+                }
+            }
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
         }
@@ -314,19 +334,35 @@ public class Juego extends Escena {
 
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
-                dedoCoordX = event.getX();
-                dedoCoordY = event.getY();
-                if (izquierda.contains(dedoCoordX, dedoCoordY)) {
-                    pulsandoIzquierda = true;
-                    movimiento = 1;// Mover izquierda
-                    jugador.moverJugador(1);
-                } else if (derecha.contains(dedoCoordX, dedoCoordY)) {
-                    pulsandoDerecha = true;
-                    movimiento = 2;// Mover derecha
-                    jugador.moverJugador(2);
+                if (!juegoPausado) {
+                    dedoCoordX = event.getX();
+                    dedoCoordY = event.getY();
+                    if (izquierda.contains(dedoCoordX, dedoCoordY)) {
+                        pulsandoIzquierda = true;
+                        movimiento = 1;// Mover izquierda
+                        jugador.moverJugador(1);
+                    } else if (derecha.contains(dedoCoordX, dedoCoordY)) {
+                        pulsandoDerecha = true;
+                        movimiento = 2;// Mover derecha
+                        jugador.moverJugador(2);
+                    }
                 }
-
+                if (perder || ganar) {
+                    if (mediaPlayer.isPlaying()||mediaPlayer.isLooping())
+                    mediaPlayer.stop();
+                }
                 if (pulsa(botonPlayPause, event)) {
+                    if (prefs.getBoolean("musica", true)) {
+                        if (pplay) {
+                            juegoPausado = true;
+                            mediaPlayer.pause();
+                        } else {
+                            juegoPausado = false;
+                            mediaPlayer.start();
+
+                        }
+                    }
+
                     pplay = !pplay;
                     editor.putBoolean("play", pplay);
                     editor.commit();
@@ -395,10 +431,12 @@ public class Juego extends Escena {
     }
 
     public void vibrar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrador.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            vibrador.vibrate(tiempoVibracion);
+        if (!vibracion) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrador.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrador.vibrate(tiempoVibracion);
+            }
         }
     }
 
@@ -420,15 +458,4 @@ public class Juego extends Escena {
         sqldb.close();
     }
 
-    public void detectRotation(SensorEvent event) {
-        if (event.values[2] > 0.5f) { // anticlockwise
-            //Mover izquierda
-            moverIzquierdaGiroscopio = true;
-            moverDerechaGiroscopio = false;
-        } else if (event.values[2] < -0.5f) { // clockwise
-            //Mover derecha
-            moverDerechaGiroscopio = true;
-            moverIzquierdaGiroscopio = false;
-        }
-    }
 }

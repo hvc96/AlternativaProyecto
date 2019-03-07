@@ -15,10 +15,14 @@ public class Audio {
     AudioManager audioManager;
     int maxSonidosSimultaneos = 10;
     boolean musicaReproduciendo;
-    public int sColision;
+    public int sColision, sVictoria, sDerrota;
 
     public boolean isMusicaReproduciendo() {
         return musicaReproduciendo;
+    }
+
+    public SoundPool getEfectos() {
+        return efectos;
     }
 
     public Audio(Context contexto, int maxSonidosSimultaneos) {
@@ -41,5 +45,7 @@ public class Audio {
             this.efectos = new SoundPool(maxSonidosSimultaneos, AudioManager.STREAM_MUSIC, 0);
         }
         sColision = efectos.load(contexto, R.raw.colision, 1);
+        sVictoria = efectos.load(contexto,R.raw.victoria,1);
+        sDerrota = efectos.load(contexto,R.raw.derrota,1);
     }
 }

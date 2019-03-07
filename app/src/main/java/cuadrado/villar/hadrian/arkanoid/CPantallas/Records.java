@@ -8,6 +8,8 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
+
 import cuadrado.villar.hadrian.arkanoid.CControl.BaseDatos;
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 
@@ -16,12 +18,14 @@ public class Records extends Escena {
     public Paint paint, pBronce,pPlata,pOro;
     Rect bronce, plata, oro;
     BaseDatos bd;
+    ArrayList<Integer> alRecords;
+    int ancho,alto;
 
     public Records(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
-        int ancho= anchoPantalla/10;
-        int alto=altoPantalla/10;
+        ancho= anchoPantalla/10;
+        alto=altoPantalla/10;
 
         pBronce= new Paint();
         pBronce.setARGB(255,150,90,56);
@@ -36,7 +40,12 @@ public class Records extends Escena {
         plata=new Rect(ancho*2,alto*4,ancho*4,alto*9);
 
         bd = new BaseDatos(context,"puntos",null,1);
-//        puntuaciones= bd.mostrarRecords();
+        alRecords= bd.mostrarRecords(sqldb);
+
+        paint =new Paint();
+        paint.setTextSize(10);
+        paint.setColor(Color.BLACK);
+        paint.setTextAlign(Paint.Align.CENTER);
     }
 
     // Actualizamos la física de los elementos comunes en pantalla
@@ -51,6 +60,14 @@ public class Records extends Escena {
             c.drawRect(bronce,pBronce);
             c.drawRect(plata,pPlata);
             c.drawRect(oro,pOro);
+            c.drawText( alRecords.get(0)+"",ancho*2,alto*4,paint);
+            c.drawText( alRecords.get(1)+"",ancho*4,alto*5,paint);
+            c.drawText( alRecords.get(2)+"",ancho*6,alto*6,paint);
+
+
+
+
+
             super.dibujar(c);
         } catch (Exception e) {
             Log.i("Error al dibujar",e.getLocalizedMessage());

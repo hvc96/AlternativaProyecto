@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -28,6 +29,8 @@ public class Escena {
     public Paint pTexto, pTexto2, pBoton, pBoton2, paint;
     public Rect volverAtras;
 
+    public static BaseDatos bd;
+    public static SQLiteDatabase sqldb;
     public static SharedPreferences prefs;
     public static SharedPreferences.Editor editor;
 

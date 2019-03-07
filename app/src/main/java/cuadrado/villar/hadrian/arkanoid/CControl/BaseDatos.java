@@ -13,7 +13,7 @@ public class BaseDatos extends SQLiteOpenHelper {
             "(0), " +
             "(0), " +
             "(0) ";
-    int[] arrayPuntos;
+    ArrayList<Integer> alRecords;
 
     public BaseDatos(Context context, String nombre, SQLiteDatabase.CursorFactory factory, int versión) {
         super(context, nombre, factory, versión);
@@ -35,17 +35,19 @@ public class BaseDatos extends SQLiteOpenHelper {
         db.execSQL(sqlInsertPts);
     }
 
-    public void mostrarRecords(SQLiteDatabase db){
+    public ArrayList mostrarRecords(SQLiteDatabase db){
+
         String query="SELECT * FROM puntos ORDER BY numero ASC LIMIT 3";
         Cursor resultadoSql = db.rawQuery(query, null);
         if (resultadoSql != null) {
             if (resultadoSql.moveToFirst()) {
                 do {
-                    arrayPuntos[0]=resultadoSql.getInt(resultadoSql.getColumnIndex("numero"));
+                    alRecords.add(resultadoSql.getInt(resultadoSql.getColumnIndex("numero")));
                 } while (resultadoSql.moveToNext());
             }
             resultadoSql.close();
         }
+        return alRecords;
     }
 
     public void introducirPuntuacion(SQLiteDatabase db, int puntuacion){
