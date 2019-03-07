@@ -27,7 +27,6 @@ public class Menu extends Escena {
     public Menu(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
-        //Peta cuando le pongo el fondo ¿?¿?
         fondo = getBitmapFromAssets("Fondos/fondo.png");
         fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
 
@@ -61,10 +60,9 @@ public class Menu extends Escena {
         p.setTextAlign(Paint.Align.CENTER);
 
 
-        //SharedPREFERENCES
-//        if (pref.getBoolean("musica", true)) {
-//            mediaPlayer.start();
-//        }
+        if (prefs.getBoolean("musica", true)) {
+            mediaPlayer.start();
+        }
 
     }
 

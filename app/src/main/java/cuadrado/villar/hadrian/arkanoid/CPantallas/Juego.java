@@ -1,6 +1,8 @@
 package cuadrado.villar.hadrian.arkanoid.CPantallas;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -48,9 +50,10 @@ public class Juego extends Escena {
     Vibrator vibrador = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
     Sensor giroscopio;
     SensorManager sm;
-    String perdertxt;
+    String perdertxt, query;
     BaseDatos bd;
     SQLiteDatabase sqldb;
+    Cursor c;
 
     // Create a listener
     SensorEventListener gyroscopeSensorListener = new SensorEventListener() {
@@ -399,6 +402,23 @@ public class Juego extends Escena {
         }
     }
 
+    public void insertPuntuacion() {
+        int maxId = 0;
+        bd = new BaseDatos(getContext(), "puntos", null, 1);
+        sqldb = bd.getWritableDatabase();
+        query = "SELECT max(id )FROM scores";
+        c = sqldb.rawQuery(query, null);
+        if (c.moveToFirst()) {
+            do {
+                maxId = c.getInt(0);
+            } while (c.moveToNext());
+        }
+        ContentValues fila = new ContentValues();
+        fila.put("id", maxId + 1);
+        sqldb.insert("puntos", null, fila);
+        c.close();
+        sqldb.close();
+    }
 
     public void detectRotation(SensorEvent event) {
         if (event.values[2] > 0.5f) { // anticlockwise

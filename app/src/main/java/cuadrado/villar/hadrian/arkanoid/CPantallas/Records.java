@@ -8,12 +8,14 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import cuadrado.villar.hadrian.arkanoid.CControl.BaseDatos;
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 
 public class Records extends Escena {
 
     public Paint paint, pBronce,pPlata,pOro;
-    Rect bronce, plata, oro, base;
+    Rect bronce, plata, oro;
+    BaseDatos bd;
 
     public Records(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
@@ -33,6 +35,8 @@ public class Records extends Escena {
         pPlata.setARGB(255,204,194,194);
         plata=new Rect(ancho*2,alto*4,ancho*4,alto*9);
 
+        bd = new BaseDatos(context,"puntos",null,1);
+//        puntuaciones= bd.mostrarRecords();
     }
 
     // Actualizamos la física de los elementos comunes en pantalla
