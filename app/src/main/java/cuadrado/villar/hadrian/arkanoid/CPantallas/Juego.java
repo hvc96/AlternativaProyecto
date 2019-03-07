@@ -69,7 +69,7 @@ public class Juego extends Escena {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
         indice = 0;
-        puntos = 0;
+        pts = 0;
         perdertxt = context.getString(R.string.perder);
 
         sm = (SensorManager) context.getSystemService(SENSOR_SERVICE);
@@ -263,7 +263,7 @@ public class Juego extends Escena {
             resetPosicion();
             reseteado = true;
             if (perder) {
-                sqldb.execSQL("INSERT INTO puntos(pts) VALUES()");
+//                sqldb.execSQL("INSERT INTO puntos(pts) VALUES()");
                 idEscenaJuego = 0;
             } else {
                 idEscenaJuego = 100;
