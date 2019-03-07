@@ -27,7 +27,7 @@ public class Creditos extends Escena {
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
-            c.drawColor(Color.GREEN);
+            c.drawColor(Color.WHITE);
 //            c.drawBitmap(fondo,0,0,null);
             super.dibujar(c);
         } catch (Exception e) {

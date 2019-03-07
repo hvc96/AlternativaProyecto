@@ -1,6 +1,8 @@
 package cuadrado.villar.hadrian.arkanoid.CControl;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,9 +28,8 @@ public class Escena {
     public Paint pTexto, pTexto2, pBoton, pBoton2, paint;
     public Rect volverAtras;
 
-    private static final int MIN_DXDY = 2;
-    final private static Map<Integer, PointF> posiciones = new HashMap<>();
-
+    public static SharedPreferences prefs;
+    public static SharedPreferences.Editor editor;
 
     public Escena(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         this.context = context;
@@ -52,14 +53,23 @@ public class Escena {
         pBoton2 = new Paint();
         pBoton2.setColor(Color.BLACK);
 
-        botonRetroceder = getBitmapFromAssets("Atras/atras.png");
-        botonRetroceder = Bitmap.createScaledBitmap(botonRetroceder, getDp(100), getDp(100), false);
+        botonRetroceder = getBitmapFromAssets("Botones/atras.png");
+        botonRetroceder = Bitmap.createScaledBitmap(botonRetroceder, getDp(50), getDp(60), false);
 
         paint = new Paint();
         paint.setColor(Color.YELLOW);
         paint.setStyle(Paint.Style.STROKE);
 
-        volverAtras = new Rect(0, 0, getDp(100), getDp(100));
+        prefs = context.getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        editor = prefs.edit();
+
+        volverAtras = new Rect(0, 0, getDp(50), getDp(60));
+
+        prefs.getBoolean("musica", true);
+        prefs.getBoolean("vibracion", true);
+        prefs.getBoolean("giroscopio", true);
+        prefs.getBoolean("castellano", true);
+        prefs.getBoolean("ingles", true);
     }
 
 
@@ -85,6 +95,7 @@ public class Escena {
                 c.drawBitmap(botonRetroceder, 0, 0, null);
                 c.drawRect(volverAtras, paint);
             }
+
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
         }
@@ -181,4 +192,23 @@ public class Escena {
         return (int) ((pixels / 7.75) * altoPantalla) / 100;
     }
 
+    public Bitmap[] getFrames(int numImg, String dir, String tag, int width){
+        Bitmap[] aux=new Bitmap[numImg];
+        for (int i=0;i<numImg;i++) aux[i]=escalaAnchura(dir+"/"+tag+" ("+(i+1)+").png",width);
+        return aux;
+    }
+
+    public  Bitmap escalaAnchura(String fichero, int nuevoAncho) {
+        Bitmap bitmapAux=getBitmapFromAssets(fichero);
+        if (nuevoAncho==bitmapAux.getWidth()) return bitmapAux;
+        return bitmapAux.createScaledBitmap(bitmapAux, nuevoAncho, (bitmapAux.getHeight() * nuevoAncho) / bitmapAux.getWidth(), true);
+    }
+
+    public void cambiaFrame(int numImg,long tFrameAuxm, long tiempoFrame, int indice){
+        if (System.currentTimeMillis()-tFrameAuxm>tiempoFrame) {
+            indice++;
+            if (indice>= numImg)indice=0;
+            tFrameAuxm=System.currentTimeMillis();
+        }
+    }
 }

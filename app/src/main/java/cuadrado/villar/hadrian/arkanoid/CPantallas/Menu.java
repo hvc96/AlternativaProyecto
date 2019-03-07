@@ -28,8 +28,8 @@ public class Menu extends Escena {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
         //Peta cuando le pongo el fondo ¿?¿?
-//        fondo = getBitmapFromAssets("Fondos/fondo.png");
-//        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
+        fondo = getBitmapFromAssets("Fondos/fondo.png");
+        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
 
         alto=altoPantalla/15;
         ancho= anchoPantalla/10;
@@ -58,6 +58,7 @@ public class Menu extends Escena {
         p.setTypeface(faw);
         p.setTextSize(getDp(70));
         p.setColor(Color.WHITE);
+        p.setTextAlign(Paint.Align.CENTER);
 
 
         //SharedPREFERENCES
@@ -110,24 +111,24 @@ public class Menu extends Escena {
     public void dibujar(Canvas c) {
         try {
             c.drawColor(Color.LTGRAY);
-//            c.drawBitmap(fondo,0,0,null);
+            c.drawBitmap(fondo,0,0,null);
             super.dibujar(c);
 
             c.drawRect(juego,pBoton2);
             c.drawCircle(ancho*5,alto*3,ancho*3,pBoton2);
-            c.drawText(jugartxt,ancho*5-juego.width()/2,juego.centerY()+(alto/6),p);
+            c.drawText(jugartxt,ancho*5,juego.centerY()+(alto/6),p);
 
-            c.drawRect(ayuda,pBoton);
-            c.drawText(ayudatxt,ayuda.exactCenterX()-ayuda.exactCenterX()/2,ayuda.centerY()+(alto/2),p);
+//            c.drawRect(ayuda,pBoton);
+            c.drawText(ayudatxt,ayuda.exactCenterX(),ayuda.centerY()+(alto/2),p);
 
-            c.drawRect(opciones,pBoton);
-            c.drawText(opcionestxt,opciones.exactCenterX()-opciones.exactCenterX()/2,opciones.centerY()+(alto/2),p);
+//            c.drawRect(opciones,pBoton);
+            c.drawText(opcionestxt,opciones.exactCenterX(),opciones.centerY()+(alto/2),p);
 
-            c.drawRect(records,pBoton);
-            c.drawText(recordstxt,records.exactCenterX()-records.exactCenterX()/2,records.centerY()+(alto/2),p);
+//            c.drawRect(records,pBoton);
+            c.drawText(recordstxt,records.exactCenterX(),records.centerY()+(alto/2),p);
 
-            c.drawRect(creditos,pBoton);
-            c.drawText(creditostxt,creditos.exactCenterX()-creditos.exactCenterX()/2,creditos.centerY()+(alto/2),p);
+//            c.drawRect(creditos,pBoton);
+            c.drawText(creditostxt,creditos.exactCenterX(),creditos.centerY()+(alto/2),p);
 
         } catch (Exception e) {
             Log.i("Error al dibujar",e.getLocalizedMessage());

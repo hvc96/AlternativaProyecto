@@ -1,10 +1,12 @@
 package cuadrado.villar.hadrian.arkanoid.CPantallas;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
@@ -18,7 +20,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
+import cuadrado.villar.hadrian.arkanoid.CControl.BaseDatos;
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Jugador;
@@ -29,22 +33,26 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class Juego extends Escena {
     float dedoCoordX, dedoCoordY;
-    int movimiento, tiempoVibracion, vidas, idEscenaJuego;
-    boolean pulsandoIzquierda, pulsandoDerecha,moverDerechaGiroscopio,moverIzquierdaGiroscopio, reseteado = false, perder = false;
+    int movimiento, tiempoVibracion, vidas, idEscenaJuego, pts, indice;
+    boolean pulsandoIzquierda, pulsandoDerecha, moverDerechaGiroscopio, moverIzquierdaGiroscopio, reseteado = false, perder = false, pplay;
     RectF izquierda, derecha;
+    Rect botonPlayPause;
     Bola bola;
     long tiempo;
     Jugador jugador;
-    Bitmap jugadorImagen1, jugadorImagen2, jugadorImagen3, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAzulOscuro, ladrilloImagenMarron, ladrilloImagenAzul, ladrilloImagenNaranja, ladrilloImagenOscuro, ladrilloImagenRojo, ladrilloImagenVerde, ladrilloImagenVerdeLima, ladrilloImagenVioleta, ladrilloImagenAmarilloRompiendo, ladrilloImagenAzulRompiendo, ladrilloImagenAzulOscuroRompiendo, ladrilloImagenMarronRompiendo, ladrilloImagenNaranjaRompiendo, ladrilloImagenOscuroRompiendo, ladrilloImagenRojoRompiendo, ladrilloImagenVerdeRompiendo, ladrilloImagenVerdeLimaRompiendo, ladrilloImagenVioletaRompiendo, vidaImagen;
+    Bitmap jugadorImagen1, jugadorImagen2, jugadorImagen3, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAmarilloRompiendo, vidaImagen, pauseImagen, playImagen, imagenJugadorDinamica;
     float velocidadJugador = 10, velocidadBolaX = 25, velocidadBolaY = 15;
     Paint pTextoblanco, pBarra, p;
     ArrayList<Ladrillo> ladrillos;
+    Collection<Bitmap> imagenesJugador;
     Vibrator vibrador = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
     Sensor giroscopio;
     SensorManager sm;
     String perdertxt;
+    BaseDatos bd;
+    SQLiteDatabase sqldb;
 
-// Create a listener
+    // Create a listener
     SensorEventListener gyroscopeSensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
@@ -57,14 +65,12 @@ public class Juego extends Escena {
     };
 
 
-
-
-
-
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
-        perdertxt= context.getString(R.string.perder);
+        indice = 0;
+        puntos = 0;
+        perdertxt = context.getString(R.string.perder);
 
         sm = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         giroscopio = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -87,10 +93,10 @@ public class Juego extends Escena {
 
         jugadorImagen1 = getBitmapFromAssets("Jugador/jugador_moviendose_1.png");
         jugadorImagen1 = Bitmap.createScaledBitmap(jugadorImagen1, getDp(100), getDp(30), false);
-        jugadorImagen2 = getBitmapFromAssets("Jugador/jugador_moviendose_2.png");
-        jugadorImagen2 = Bitmap.createScaledBitmap(jugadorImagen2, getDp(100), getDp(30), false);
-        jugadorImagen3 = getBitmapFromAssets("Jugador/jugador_moviendose_3.png");
-        jugadorImagen3 = Bitmap.createScaledBitmap(jugadorImagen3, getDp(100), getDp(30), false);
+//        jugadorImagen2 = getBitmapFromAssets("Jugador/jugador_moviendose_2.png");
+//        jugadorImagen2 = Bitmap.createScaledBitmap(jugadorImagen2, getDp(100), getDp(30), false);
+//        jugadorImagen3 = getBitmapFromAssets("Jugador/jugador_moviendose_3.png");
+//        jugadorImagen3 = Bitmap.createScaledBitmap(jugadorImagen3, getDp(100), getDp(30), false);
 
         jugador = new Jugador(jugadorImagen1, anchoPantalla / 2 - jugadorImagen1.getWidth() / 2, altoPantalla - getDp(30), velocidadJugador, anchoPantalla);
 
@@ -98,70 +104,51 @@ public class Juego extends Escena {
         bolaImagen = Bitmap.createScaledBitmap(bolaImagen, getDp(15), getDp(15), false);
         bola = new Bola(bolaImagen, anchoPantalla / 2, altoPantalla - getDp(55), velocidadBolaX, velocidadBolaY, altoPantalla);
 
+        if (prefs.getBoolean("play", true) == true) {
+            pplay = true;
+        } else {
+            pplay = false;
+        }
+
         //Ladrillos normales
 
         ladrilloImagenAmarillo = getBitmapFromAssets("Ladrillos/Normales/ladrillo_amarillo.png");
         ladrilloImagenAmarillo = Bitmap.createScaledBitmap(ladrilloImagenAmarillo, anchoPantalla / 5, altoPantalla / 30, false);
-        ladrilloImagenAzul = getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul.png");
-        ladrilloImagenAzul = Bitmap.createScaledBitmap(ladrilloImagenAzul, getDp(80), getDp(20), false);
-        ladrilloImagenAzulOscuro = getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul_oscuro.png");
-        ladrilloImagenAzulOscuro = Bitmap.createScaledBitmap(ladrilloImagenAzulOscuro, getDp(80), getDp(20), false);
-        ladrilloImagenMarron = getBitmapFromAssets("Ladrillos/Normales/ladrillo_marron.png");
-        ladrilloImagenMarron = Bitmap.createScaledBitmap(ladrilloImagenMarron, getDp(80), getDp(20), false);
-        ladrilloImagenNaranja = getBitmapFromAssets("Ladrillos/Normales/ladrillo_naranja.png");
-        ladrilloImagenNaranja = Bitmap.createScaledBitmap(ladrilloImagenNaranja, getDp(80), getDp(20), false);
-        ladrilloImagenOscuro = getBitmapFromAssets("Ladrillos/Normales/ladrillo_oscuro.png");
-        ladrilloImagenOscuro = Bitmap.createScaledBitmap(ladrilloImagenOscuro, getDp(80), getDp(20), false);
-        ladrilloImagenRojo = getBitmapFromAssets("Ladrillos/Normales/ladrillo_rojo.png");
-        ladrilloImagenRojo = Bitmap.createScaledBitmap(ladrilloImagenRojo, getDp(80), getDp(20), false);
-        ladrilloImagenVerde = getBitmapFromAssets("Ladrillos/Normales/ladrillo_verde.png");
-        ladrilloImagenVerde = Bitmap.createScaledBitmap(ladrilloImagenVerde, getDp(80), getDp(20), false);
-        ladrilloImagenVerdeLima = getBitmapFromAssets("Ladrillos/Normales/ladrillo_verde_lima.png");
-        ladrilloImagenVerdeLima = Bitmap.createScaledBitmap(ladrilloImagenVerdeLima, getDp(80), getDp(20), false);
-        ladrilloImagenVioleta = getBitmapFromAssets("Ladrillos/Normales/ladrillo_violeta.png");
-        ladrilloImagenVioleta = Bitmap.createScaledBitmap(ladrilloImagenVioleta, getDp(80), getDp(20), false);
 
         //Ladrillos rompiendose
         ladrilloImagenAmarilloRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_amarillo_rompiendo.png");
         ladrilloImagenAmarilloRompiendo = Bitmap.createScaledBitmap(ladrilloImagenAmarilloRompiendo, anchoPantalla / 5, altoPantalla / 30, false);
-        ladrilloImagenAzulRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_azul_rompiendo.png");
-        ladrilloImagenAzulRompiendo = Bitmap.createScaledBitmap(ladrilloImagenAzulRompiendo, getDp(80), getDp(20), false);
-        ladrilloImagenAzulOscuroRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_azul_oscuro_rompiendo.png");
-        ladrilloImagenAzulOscuroRompiendo = Bitmap.createScaledBitmap(ladrilloImagenAzulOscuroRompiendo, getDp(80), getDp(20), false);
-        ladrilloImagenMarronRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_marron_rompiendo.png");
-        ladrilloImagenMarronRompiendo = Bitmap.createScaledBitmap(ladrilloImagenMarronRompiendo, getDp(80), getDp(20), false);
-        ladrilloImagenNaranjaRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_naranja_rompiendo.png");
-        ladrilloImagenNaranjaRompiendo = Bitmap.createScaledBitmap(ladrilloImagenNaranjaRompiendo, getDp(80), getDp(20), false);
-        ladrilloImagenOscuroRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_oscuro_rompiendo.png");
-        ladrilloImagenOscuroRompiendo = Bitmap.createScaledBitmap(ladrilloImagenOscuroRompiendo, getDp(80), getDp(20), false);
-        ladrilloImagenRojoRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_rojo_rompiendo.png");
-        ladrilloImagenRojoRompiendo = Bitmap.createScaledBitmap(ladrilloImagenRojoRompiendo, getDp(80), getDp(20), false);
-        ladrilloImagenVerdeRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_verde_rompiendo.png");
-        ladrilloImagenVerdeRompiendo = Bitmap.createScaledBitmap(ladrilloImagenVerdeRompiendo, getDp(80), getDp(20), false);
-        ladrilloImagenVerdeLimaRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_verde_lima_rompiendo.png");
-        ladrilloImagenVerdeLimaRompiendo = Bitmap.createScaledBitmap(ladrilloImagenVerdeLimaRompiendo, getDp(80), getDp(20), false);
-        ladrilloImagenVioletaRompiendo = getBitmapFromAssets("Ladrillos/Rompiendo/ladrillo_violeta_rompiendo.png");
-        ladrilloImagenVioletaRompiendo = Bitmap.createScaledBitmap(ladrilloImagenVioletaRompiendo, getDp(80), getDp(20), false);
 
         //Vida
         vidaImagen = getBitmapFromAssets("Jugador/Vida/vida.png");
         vidaImagen = Bitmap.createScaledBitmap(vidaImagen, altoPantalla / 20, altoPantalla / 20, false);
+
+        playImagen = getBitmapFromAssets("Botones/play.png");
+        playImagen = Bitmap.createScaledBitmap(playImagen, altoPantalla / 16, altoPantalla / 16, false);
+        pauseImagen = getBitmapFromAssets("Botones/pause.png");
+        pauseImagen = Bitmap.createScaledBitmap(pauseImagen, altoPantalla / 16, altoPantalla / 16, false);
+        botonPlayPause = new Rect(0, 0, playImagen.getWidth(), playImagen.getWidth());
+
         ladrillos = creaLadrillos(25);
 
         tiempo = System.currentTimeMillis();
 
         Typeface faw = Typeface.createFromAsset(context.getAssets(), "Fuentes/PoiretOne-Regular.ttf");
-        p=new Paint();
+        p = new Paint();
         p.setTypeface(faw);
         p.setTextSize(getDp(60));
         p.setColor(Color.RED);
+        p.setTextAlign(Paint.Align.CENTER);
+
+        //imagenesJugador.addAll(getFrames(3,"Jugador","jugador_moviendose_",jugadorImagen1.getWidth()));
+        //imagenJugadorDinamica=cambiaFrame(3,tiempo,100,indice);
     }
 
 
     public ArrayList<Ladrillo> creaLadrillos(int nMax) {
         ArrayList<Ladrillo> alLadrillos = new ArrayList<>();
         int cont = 0;
-// Empieza en 40 porque son para botones vidas etc
+        // Empieza en 40 porque son para botones vidas etc
         int y = altoPantalla / 20, x = 0;
         for (int i = 0; i < nMax; i++) {
             if (cont % 5 == 0) {
@@ -181,38 +168,40 @@ public class Juego extends Escena {
     public void actualizarFisica() {
         jugarOtraVez();
 
-        Log.i("giroscopio","   izquierda "+moverIzquierdaGiroscopio+"   ----------    derecha "+moverDerechaGiroscopio);
-
-        Log.i("tiempito", "es divisble?   " + (System.currentTimeMillis() - tiempo % 2 == 0) +"     "+System.currentTimeMillis()+"        "+tiempo+"          "+"wtf  "+ (System.currentTimeMillis() - tiempo));
-        if (System.currentTimeMillis() - tiempo % 2 > 0) {
-            jugador.imagen = jugadorImagen1;
-            Log.i("entre1","                   "+jugador.imagen);
-        } else if (System.currentTimeMillis() - tiempo % 5 > 0) {
-            jugador.imagen = jugadorImagen2;
-            Log.i("entre2","        !!"+jugador.imagen);
-        } else {
-            jugador.imagen = jugadorImagen3;
-            Log.i("entre3"," "+jugador.imagen);
-        }
+        Log.i("giroscopio", "   izquierda " + moverIzquierdaGiroscopio + "   ----------    derecha " + moverDerechaGiroscopio);
+        Log.i("tiempito", "es divisble?   " + (System.currentTimeMillis() - tiempo % 2 == 0) + "     " + System.currentTimeMillis() + "        " + tiempo + "          " + "wtf  " + (System.currentTimeMillis() - tiempo));
+//        if (System.currentTimeMillis() - tiempo % 2 > 0) {
+//            jugador.imagen = jugadorImagen1;
+//            Log.i("entre1", "                   " + jugador.imagen);
+//        } else if (System.currentTimeMillis() - tiempo % 5 > 0) {
+//            jugador.imagen = jugadorImagen2;
+//            Log.i("entre2", "        !!" + jugador.imagen);
+//        } else {
+//            jugador.imagen = jugadorImagen3;
+//            Log.i("entre3", " " + jugador.imagen);
+//        }
 
 
         for (int i = ladrillos.size() - 1; i >= 0; i--) {
             if (ladrillos.get(i).colisionaLadrillos(bola, ladrilloImagenAmarilloRompiendo)) {
 //                bola.reverseXVelocity();
                 bola.reverseYVelocity();  //Ahora solo rebota hacia abajo, no tiene colisiones laterales
-                if (ladrillos.get(i).getNumImpactos() <= 0) ladrillos.remove(i);
+                if (ladrillos.get(i).getNumImpactos() <= 0) {
+                    ladrillos.remove(i);
+                    pts++;
+                }
             }
         }
         switch (movimiento) {
             case 1:
-                if (pulsandoIzquierda||moverIzquierdaGiroscopio) {
+                if (pulsandoIzquierda || moverIzquierdaGiroscopio) {
                     jugador.moverJugador(1);
                     pulsandoDerecha = false;
 //                    moverIzquierdaGiroscopio=false;
                 }
                 break;
             case 2:
-                if (pulsandoDerecha||moverDerechaGiroscopio) {
+                if (pulsandoDerecha || moverDerechaGiroscopio) {
                     jugador.moverJugador(2);
                     pulsandoIzquierda = false;
 //                    moverDerechaGiroscopio=false;
@@ -222,11 +211,11 @@ public class Juego extends Escena {
         bola.actualizarFisica();
         bola.limites(anchoPantalla);
 
-        if (jugador.ed.contains(bola.contenedor)&&bola.contenedor.top==anchoPantalla){
+        if (jugador.ed.contains(bola.contenedor) && bola.contenedor.top == anchoPantalla) {
             bola.setVelocidadX(-15);
         }
 
-        if (jugador.ei.contains(bola.contenedor)&&bola.contenedor.left==0){
+        if (jugador.ei.contains(bola.contenedor) && bola.contenedor.left == 0) {
             bola.setVelocidadX(15);
         }
 
@@ -274,6 +263,7 @@ public class Juego extends Escena {
             resetPosicion();
             reseteado = true;
             if (perder) {
+                sqldb.execSQL("INSERT INTO puntos(pts) VALUES()");
                 idEscenaJuego = 0;
             } else {
                 idEscenaJuego = 100;
@@ -289,15 +279,22 @@ public class Juego extends Escena {
 
             //Vidas
             c.drawBitmap(vidaImagen, anchoPantalla - vidaImagen.getWidth() - getDp(5), getDp(5), null);
+            if (pplay) {
+                c.drawBitmap(playImagen, getDp(5), getDp(5), null);
+            } else {
+                c.drawBitmap(pauseImagen, getDp(5), getDp(5), null);
+            }
             c.drawText(vidas + "", anchoPantalla - vidaImagen.getWidth() * 2, altoPantalla / 20, pTextoblanco);
 
             jugador.dibujar(c);
+//            jugador.imagen.
+
             bola.dibujar(c);
             for (Ladrillo l : ladrillos) l.dibujar(c);
 
-            if (perder){
+            if (perder) {
                 c.drawColor(Color.BLACK);
-                c.drawText(perdertxt,anchoPantalla/2-anchoPantalla/4, altoPantalla/2,p);
+                c.drawText(perdertxt, anchoPantalla / 2, altoPantalla / 2, p);
             }
 
         } catch (Exception e) {
@@ -326,6 +323,12 @@ public class Juego extends Escena {
                     jugador.moverJugador(2);
                 }
 
+                if (pulsa(botonPlayPause, event)) {
+                    pplay = !pplay;
+                    editor.putBoolean("play", pplay);
+                    editor.commit();
+                }
+
                 if (reseteado) {
                     resetVelocidad();
                     reseteado = false;
@@ -347,9 +350,6 @@ public class Juego extends Escena {
             default:
                 Log.i("Otra acción", "Acción no definida: " + accion);
         }
-
-//        int idPadre = super.onTouchEvent(event);
-//        if (idPadre != idEscena) return idPadre;
 
         return -123;//No cambia porque no existe este caso
     }
@@ -403,12 +403,12 @@ public class Juego extends Escena {
     public void detectRotation(SensorEvent event) {
         if (event.values[2] > 0.5f) { // anticlockwise
             //Mover izquierda
-            moverIzquierdaGiroscopio=true;
-            moverDerechaGiroscopio=false;
+            moverIzquierdaGiroscopio = true;
+            moverDerechaGiroscopio = false;
         } else if (event.values[2] < -0.5f) { // clockwise
             //Mover derecha
-            moverDerechaGiroscopio=true;
-            moverIzquierdaGiroscopio=false;
+            moverDerechaGiroscopio = true;
+            moverIzquierdaGiroscopio = false;
         }
     }
 }
