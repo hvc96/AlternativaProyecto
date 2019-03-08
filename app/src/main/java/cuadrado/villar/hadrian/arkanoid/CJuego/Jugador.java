@@ -7,6 +7,12 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+/**
+ * <h1>Jugador</h1>
+ * Objeto jugador, utilizado en el juego.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class Jugador {
     public RectF contenedor;
     public float anchoPantalla, x, y, velocidadJugador;
@@ -19,6 +25,14 @@ public class Jugador {
 
     Paint p1, p2, p3, p4, p5;
 
+    /**
+     * Constructor de clase.
+     * @param imagen Imagen dl jugador.
+     * @param x Coordenada x.
+     * @param y Coordenada y.
+     * @param velocidadJugador Velocidad del jugador en la coordenada x.
+     * @param anchoPantalla Ancho de la pantalla.
+     */
     public Jugador(Bitmap imagen, float x, float y, float velocidadJugador, float anchoPantalla) {
         this.posicion = new PointF(x, y);
         this.imagen = imagen;
@@ -51,7 +65,11 @@ public class Jugador {
 
     }
 
-
+    /**
+     * Método para el dibujado del jugador.
+     *
+     * @param c Objeto Canvas para utilizar los métodos útiles para el dibujo.
+     */
     public void dibujar(Canvas c) {
         c.drawBitmap(imagen, posicion.x, posicion.y, null);
 //        c.drawRect(ei, p1);
@@ -62,10 +80,10 @@ public class Jugador {
         c.drawRect(contenedor,p1);
     }
 
-    public RectF getRect() {
-        return contenedor;
-    }
-
+    /**
+     * Método para mover al jugador en una dirección.
+     * @param direccion si es 1 es izquierda, si es 2 derecha.
+     */
     public void moverJugador(int direccion) {
         switch (direccion) {
             case 1: //Izquierda
@@ -89,6 +107,10 @@ public class Jugador {
 
         actualizarRects();
     }
+
+    /**
+     * Funciona igual que un actualizar de un rectángulo habitual, pero lo descomponemos en varios segmentos.
+     */
     public void actualizarRects(){
         //Actualizar contenedores de jugador
         this.ei = new RectF(contenedor.left, contenedor.top, contenedor.left + partes, contenedor.bottom);
@@ -98,6 +120,10 @@ public class Jugador {
         this.ed = new RectF(contenedor.left + partes * 4, contenedor.top, contenedor.right, contenedor.bottom);
     }
 
+    /**
+     * Método para moverr al jugador mediante el giroscopio.
+     * @param nuevaPosX Coordenada en x proporcionada por el sensor.
+     */
     public void moverJugadorGiroscopio(float nuevaPosX){
         this.posicion.x=nuevaPosX-imagen.getWidth()/2;
         this.actualizarRects(); // No se porque razon no me los actualiza si los llamo desde aqui
