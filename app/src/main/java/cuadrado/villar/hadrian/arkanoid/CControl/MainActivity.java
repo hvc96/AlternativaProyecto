@@ -13,7 +13,6 @@ import cuadrado.villar.hadrian.arkanoid.CPantallas.Menu;
 import static cuadrado.villar.hadrian.arkanoid.CControl.Escena.prefs;
 
 /**
- * <h1>Main Activity</h1>
  * Clase donde se controla la creacíon, pausa, etc de la aplicación.
  *
  * @author Hadrián Villar Cuadrado

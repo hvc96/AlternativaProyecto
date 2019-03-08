@@ -15,7 +15,6 @@ import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.R;
 
 /**
- * <h1>Créditos</h1>
  * Pantalla Créditos, utilizado en el juego para mostrar la información referente a los agradecimientos imagenes y demás.
  *
  * @author Hadrián Villar Cuadrado
@@ -24,7 +23,6 @@ public class Creditos extends Escena {
 
     String tt0,t1,t2,tt3,t4,tt5,t6,t7,t8,tt9,t10,t22;
     Paint pNormal,pTitulo;
-    ArrayList<String> alTextos;
     int alto;
 
     /**
@@ -54,7 +52,7 @@ public class Creditos extends Escena {
         t7 = context.getString(R.string.genteAgradecimientosAmigos1);
         t8 = context.getString(R.string.genteAgradecimientosAmigos2);
 
-        tt9 = context.getString(R.string.programadodiseñado);
+        tt9 = context.getString(R.string.programadoelaborado);
         t10 = context.getString(R.string.yo);
 
 

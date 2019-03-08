@@ -38,7 +38,6 @@ import cuadrado.villar.hadrian.arkanoid.R;
 import static android.content.Context.SENSOR_SERVICE;
 
 /**
- * <h1>Juego</h1>
  * Pantalla Juego, donde se produce el gameplay de la aplicación.
  *
  * @author Hadrián Villar Cuadrado
@@ -59,10 +58,10 @@ public class Juego extends Escena {
     Vibrator vibrador = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
     Sensor giroscopio;
     SensorManager sm;
-    String perdertxt, ganartxt, query;
-    Bitmap[] imagenes;
-    Cursor c;
-    MediaPlayer mediaPlayer;
+    String perdertxt, ganartxt;
+    MediaPlayer mediaPlayer, mDerrota, mVictoria;
+
+
     Audio audio;
 
     // Create a listener
@@ -75,7 +74,7 @@ public class Juego extends Escena {
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (moverGiroscopio) {
                 float posXGiro = anchoPantalla / 2 - sensorEvent.values[0] * 100;
-                if (posXGiro  >= 0 +jugador.imagen.getWidth()/2 && posXGiro <= anchoPantalla-jugador.imagen.getWidth()/2) {
+                if (posXGiro >= 0 + jugador.imagen.getWidth() / 2 && posXGiro <= anchoPantalla - jugador.imagen.getWidth() / 2) {
                     jugador.moverJugadorGiroscopio(posXGiro);
                     jugador.actualizarRects();
                 }
@@ -94,18 +93,16 @@ public class Juego extends Escena {
 
     /**
      * Constructor de clase.
-     * @param context Contexto de la aplicación.
-     * @param idEscena Define la pantalla en la que estamos.
+     *
+     * @param context       Contexto de la aplicación.
+     * @param idEscena      Define la pantalla en la que estamos.
      * @param anchoPantalla Ancho de la pantalla.
-     * @param altoPantalla Alto de la pantalla.
+     * @param altoPantalla  Alto de la pantalla.
      */
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
-        imagenes = new Bitmap[2];
-
-        Random rand = new Random();
-        int n = rand.nextInt(8); // Dara un int aleatorio entre 0 y 8 incluidos
+        bd = new BaseDatos(context, "puntos", null, 1);
 
         indice = 0;
         pts = 0;
@@ -127,7 +124,7 @@ public class Juego extends Escena {
         pBarra = new Paint();
         pBarra.setColor(Color.LTGRAY);
 
-        vidas = 2;
+        vidas = 3;
 
         izquierda = new RectF(0, 0, anchoPantalla / 2, altoPantalla);
         derecha = new RectF(anchoPantalla / 2, 0, anchoPantalla, altoPantalla);
@@ -139,15 +136,15 @@ public class Juego extends Escena {
 
         bolaImagen = getBitmapFromAssets("Bola/bola.png");
         bolaImagen = Bitmap.createScaledBitmap(bolaImagen, getDp(15), getDp(15), false);
-        bola = new Bola(bolaImagen, anchoPantalla / 2, altoPantalla - getDp(55), velocidadBolaX, velocidadBolaY, altoPantalla);
+        bola = new Bola(getContext(),bolaImagen, anchoPantalla / 2, altoPantalla - getDp(55), velocidadBolaX, velocidadBolaY, altoPantalla);
 
-        if (prefs.getBoolean("play", true)) {
+        if (prefs.getBoolean("play", false)) {
             pplay = true;
         } else {
             pplay = false;
         }
 
-        if (prefs.getBoolean("giroscopio", true)) {
+        if (prefs.getBoolean("giroscopio", false)) {
             moverGiroscopio = true;
         } else {
             moverGiroscopio = false;
@@ -202,6 +199,10 @@ public class Juego extends Escena {
             vibracion = false;
         }
 
+        mDerrota = MediaPlayer.create(context, R.raw.derrota);
+        mDerrota.setLooping(false);
+        mVictoria = MediaPlayer.create(context, R.raw.victoria);
+        mVictoria.setLooping(false);
     }
 
     /**
@@ -241,7 +242,7 @@ public class Juego extends Escena {
                         break;
                 }
             }
-                jugador.actualizarRects();
+            jugador.actualizarRects();
 
             bola.actualizarFisica();
             bola.limites(anchoPantalla);
@@ -283,17 +284,18 @@ public class Juego extends Escena {
 
             if (vidas == 0) {
                 perder = true;
-                //audio.getEfectos().play(audio.sDerrota,1,1,1,0,1);
+                mDerrota.start();
             }
-
             if (bola.getContenedor().bottom > altoPantalla) {
                 perderVida();
                 resetPosicion();
                 reseteado = true;
-                if (ganar||perder) {
-//                sqldb.execSQL("INSERT INTO puntos(pts) VALUES()");
-
-                }
+            }
+            if (ganar){
+                mVictoria.start();
+            }
+            if (perder){
+                mediaPlayer.stop();
             }
         }
     }
@@ -334,6 +336,8 @@ public class Juego extends Escena {
                     c.drawColor(Color.BLACK);
                     c.drawText(ganartxt, anchoPantalla / 2, altoPantalla / 2, p);
                 }
+
+
             }
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
@@ -342,6 +346,7 @@ public class Juego extends Escena {
 
     /**
      * Método para la gestión de la pulsación en la pantalla.
+     *
      * @param event Evento ocasionado al tocar la pantalla.
      * @return Devuelve la escena en la que se encuentra.
      */
@@ -366,19 +371,12 @@ public class Juego extends Escena {
                 }
 
                 if (pulsa(botonPlayPause, event)) {
-                    if (prefs.getBoolean("musica", true)) {
-                        if (pplay) {
-                            juegoPausado = true;
-                            mediaPlayer.pause();
-                        } else {
-                            juegoPausado = false;
-                            mediaPlayer.start();
-
-                        }
-                    }
-                    if (perder || ganar) {
-                        if (mediaPlayer.isPlaying() || mediaPlayer.isLooping())
-                            mediaPlayer.stop();
+                    if (pplay) {
+                        juegoPausado = true;
+                        mediaPlayer.pause();
+                    } else {
+                        juegoPausado = false;
+                        mediaPlayer.start();
                     }
 
                     pplay = !pplay;
@@ -390,13 +388,19 @@ public class Juego extends Escena {
                     resetVelocidad();
                     reseteado = false;
                 }
-
+                if (perder || ganar) {
+                    Log.i("Holi", "jiji");
+                    bd.introducirPuntuacion(bd.getWritableDatabase(), pts);
+                    if (mediaPlayer.isPlaying() || mediaPlayer.isLooping()) {
+                        mediaPlayer.stop();
+                    }
+                }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-                if (perder||ganar) return 0; //Vuelve al menu
+                if (perder || ganar) return 0; //Vuelve al menu
                 pulsandoIzquierda = false;
                 pulsandoDerecha = false;
                 break;
@@ -442,6 +446,7 @@ public class Juego extends Escena {
 
     /**
      * Método que te devuelve a la pantalla menú.
+     *
      * @return Devuelve el id de pantalla.
      */
     public int jugarOtraVez() {
@@ -477,6 +482,7 @@ public class Juego extends Escena {
 
     /**
      * Método para la creación de los objetos ladrillo.
+     *
      * @param nMax Número máximo de ladrillos a crear.
      * @return Devuelve el ArrayList de Ladrillos.
      */
@@ -498,27 +504,7 @@ public class Juego extends Escena {
         return alLadrillos;
     }
 
-    /**
-     * Método que se ejecuta para introducir la puntuación sobre la base de datos.
-     */
-    public void insertPuntuacion() {
-        int maxId = 0;
-        bd = new BaseDatos(getContext(), "puntos", null, 1);
-        sqldb = bd.getWritableDatabase();
-        query = "SELECT max(id )FROM scores";
-        c = sqldb.rawQuery(query, null);
-        if (c.moveToFirst()) {
-            do {
-                maxId = c.getInt(0);
-            } while (c.moveToNext());
-        }
-        ContentValues fila = new ContentValues();
-        fila.put("id", maxId + 1);
-        sqldb.insert("puntos", null, fila);
-        c.close();
-        sqldb.close();
-    }
-
+}
 //    TODO: Imagenes aleatorias.
 //    public void colocarImagenes(int n){
 //        Ladrillo ladrillo= new Ladrillo(x, y, ladrilloImagenAmarillo);
@@ -531,4 +517,5 @@ public class Juego extends Escena {
 //        imagenes[1]=Bitmap.createScaledBitmap(ladrillo.coloresRandom(n),anchoPantalla/5,altoPantalla/30,false);
 //
 //    }
-}
+//     TODO:Power-ups, serán al destruir un ladrillo aleatorio, bajará progresivamente desde su posicion por el eje y.
+//     TODO:Vidas aleatorias, estilo power-ups.

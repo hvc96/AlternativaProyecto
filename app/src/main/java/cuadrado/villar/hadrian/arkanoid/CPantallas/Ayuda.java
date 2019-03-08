@@ -1,20 +1,25 @@
 package cuadrado.villar.hadrian.arkanoid.CPantallas;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 
 /**
- * <h1>Ayuda</h1>
  * Pantalla Ayuda, utilizado en el juego.
  *
  * @author Hadrián Villar Cuadrado
  */
 public class Ayuda extends Escena {
+
+    Bitmap[] imagenes;
+    int cont;
+    Rect pantalla;
 
     /**
      * Constructor de clase.
@@ -25,6 +30,17 @@ public class Ayuda extends Escena {
      */
     public Ayuda(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
+        imagenes=new Bitmap[7];
+        imagenes[0]=Bitmap.createScaledBitmap(getBitmapFromAssets("Ayuda/inicio_texto.png"),anchoPantalla,altoPantalla,false);
+        imagenes[1]=Bitmap.createScaledBitmap(getBitmapFromAssets("Ayuda/juego_texto.png"),anchoPantalla,altoPantalla,false);
+        imagenes[2]=Bitmap.createScaledBitmap(getBitmapFromAssets("Ayuda/juego_perder_texto.png"),anchoPantalla,altoPantalla,false);
+        imagenes[3]=Bitmap.createScaledBitmap(getBitmapFromAssets("Ayuda/opciones_volumen_texto.png"),anchoPantalla,altoPantalla,false);
+        imagenes[4]=Bitmap.createScaledBitmap(getBitmapFromAssets("Ayuda/opciones_sensores_texto.png"),anchoPantalla,altoPantalla,false);
+        imagenes[5]=Bitmap.createScaledBitmap(getBitmapFromAssets("Ayuda/opciones_idioma_texto.png"),anchoPantalla,altoPantalla,false);
+        imagenes[6]=Bitmap.createScaledBitmap(getBitmapFromAssets("Ayuda/records_texto.png"),anchoPantalla,altoPantalla,false);
+        cont=0;
+
+        pantalla=new Rect(0,0,anchoPantalla,altoPantalla);
     }
 
     /**
@@ -44,7 +60,9 @@ public class Ayuda extends Escena {
     public void dibujar(Canvas c) {
         try {
             c.drawColor(Color.WHITE);
-            //            c.drawBitmap(fondo,0,0,null);
+            c.drawBitmap(imagenes[cont],0,0,null);
+
+
             super.dibujar(c);
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
@@ -60,6 +78,11 @@ public class Ayuda extends Escena {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
+                if (pulsa(pantalla,event)){
+                    cont++;
+                }
+                if (cont>=imagenes.length)cont=0;
+                break;
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
 

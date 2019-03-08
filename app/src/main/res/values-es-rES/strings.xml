@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Arkanoid</string>
+    <string name="app_name">ArkAndroid</string>
     <string name="ayuda">Ayuda</string>
-    <string name="creditos">Créditos</string>
+    <string name="creditos">Creditos</string>
     <string name="records">Records</string>
     <string name="opciones">Opciones</string>
     <string name="jugar">JUGAR</string>
@@ -11,8 +11,8 @@
     <string name="agradecimientos">Agradecimientos</string>
     <string name="licenciasAgradecer">excepto los iconos que son de Flaticon.es</string>
     <string name="licencias">Todos los elementos usados en este proyecto</string>
-    <string name="programadodiseñado">Programado y diseñado por</string>
+    <string name="programadoelaborado">Programado y elaborado por</string>
     <string name="programador">Programador</string>
     <string name="licenciastitulo">Licencias</string>
-    <string name="licenciasAgr2">" son de dominio público"</string>
+    <string name="licenciasAgr2">" son de dominio publico"</string>
 </resources>

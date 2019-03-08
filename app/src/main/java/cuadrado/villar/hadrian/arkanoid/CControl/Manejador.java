@@ -15,7 +15,6 @@ import cuadrado.villar.hadrian.arkanoid.CPantallas.Opciones;
 import cuadrado.villar.hadrian.arkanoid.CPantallas.Records;
 
 /**
- * <h1>Manejador</h1>
  * Clase donde se controla el cambio entre pantallas.
  *
  * @author Hadrián Villar Cuadrado

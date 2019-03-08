@@ -19,7 +19,6 @@ import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
 
 /**
- * <h1>Opciones</h1>
  * Pantalla Opciones, se gestiona los sensores y el idioma de la aplicación.
  *
  * @author Hadrián Villar Cuadrado
@@ -80,31 +79,31 @@ public class Opciones extends Escena {
 
         ingles = new Rect(ancho * 4 - inglesONImagen.getWidth() / 2, alto * 8, ancho * 4 + inglesONImagen.getWidth() / 2, alto * 8 + getDp(100));
 
-        if (prefs.getBoolean("musica", true) == true) {
+        if (prefs.getBoolean("musica", true)) {
             mmusica = true;
         } else {
             mmusica = false;
         }
 
-        if (prefs.getBoolean("vibracion", true) == true) {
+        if (prefs.getBoolean("vibracion", true)) {
             vvibracion = true;
         } else {
             vvibracion = false;
         }
 
-        if (prefs.getBoolean("giroscopio", true) == true) {
+        if (prefs.getBoolean("giroscopio", true)) {
             ggiroscopio = true;
         } else {
             ggiroscopio = false;
         }
 
-        if (prefs.getBoolean("castellano", true) == true) {
+        if (prefs.getBoolean("castellano", true)) {
             ccastellano = true;
         } else {
             ccastellano = false;
         }
 
-        if (prefs.getBoolean("ingles", true) == true) {
+        if (prefs.getBoolean("ingles", true)) {
             inggles = true;
         } else {
             inggles = false;

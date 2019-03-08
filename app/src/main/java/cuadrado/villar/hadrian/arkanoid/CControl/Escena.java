@@ -22,14 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <h1>Escena</h1>
  * Clase de la cual extienden todas las pantallas.
  *
  * @author Hadrián Villar Cuadrado
  */
 public class Escena {
 
-    Context context;
+    public Context context;
     public int idEscena;
     public int anchoPantalla, altoPantalla;
     public Bitmap fondo, botonRetroceder;
@@ -126,7 +125,7 @@ public class Escena {
         try {
             if (idEscena != 0 && idEscena != 100) {
                 c.drawBitmap(botonRetroceder, 0, 0, null);
-                c.drawRect(volverAtras, paint);
+                //c.drawRect(volverAtras, paint);
             }
 
         } catch (Exception e) {

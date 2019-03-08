@@ -1,11 +1,13 @@
 package cuadrado.villar.hadrian.arkanoid.CJuego;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -13,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import cuadrado.villar.hadrian.arkanoid.CPantallas.Juego;
+import cuadrado.villar.hadrian.arkanoid.R;
 
 /**
- * <h1>Bola</h1>
  * Objeto bola, utilizada en el juego.
  *
  * @author Hadrián Villar Cuadrado
@@ -31,6 +33,7 @@ public class Bola {
     public boolean perdio = false, signo;
     public boolean restaChoque = true;
     public int altoPantalla;
+    MediaPlayer mColision;
 
     public boolean isRestaChoque() {
         return restaChoque;
@@ -50,7 +53,7 @@ public class Bola {
      * @param velocidadY   Velocidad en el eje y.
      * @param altoPantalla Alto de la pantalla del dispositivo.
      */
-    public Bola(Bitmap imagen, float x, float y, float velocidadX, float velocidadY, int altoPantalla) {
+    public Bola(Context context,Bitmap imagen, float x, float y, float velocidadX, float velocidadY, int altoPantalla) {
         this.posicion = new PointF(x, y);
         this.imagen = imagen;
         contenedor = new RectF(posicion.x, posicion.y, posicion.x + imagen.getWidth(), posicion.y + imagen.getHeight());
@@ -62,6 +65,9 @@ public class Bola {
         paint = new Paint();
         paint.setColor(Color.GREEN);
         paint.setStyle(Paint.Style.STROKE);
+
+        mColision = MediaPlayer.create(context, R.raw.colision);
+        mColision.setLooping(false);
     }
 
     /**
@@ -100,6 +106,7 @@ public class Bola {
      */
     public void reverseYVelocity() {
         velocidadY = -this.getVelocidadY();
+        mColision.start();
     }
 
     /**
@@ -107,6 +114,7 @@ public class Bola {
      */
     public void reverseXVelocity() {
         velocidadX = -this.getVelocidadX();
+        mColision.start();
     }
 
     /**

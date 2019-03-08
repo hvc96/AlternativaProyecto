@@ -17,7 +17,6 @@ import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.R;
 
 /**
- * <h1>Menú</h1>
  * Pantalla Menú, se gestiona el control de escenas de la aplicación.
  *
  * @author Hadrián Villar Cuadrado

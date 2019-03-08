@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 
 /**
- * <h1>Ladrillo</h1>
  * Objeto Ladrillo, utilizado en el juego.
  *
  * @author Hadrián Villar Cuadrado

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Arkanoid</string>
+    <string name="app_name">ArkAndroid</string>
     <string name="ayuda">Help</string>
     <string name="opciones">Options</string>
     <string name="records">Records</string>
@@ -8,13 +8,13 @@
     <string name="perder">You lose</string>
     <string name="ganar">You win</string>
     <string name="agradecimientos">Special thanks</string>
-    <string name="genteAgradecimientosAmigos1" translatable="false">"Lucas Alonso, Victor León, José Villar, "</string>
+    <string name="genteAgradecimientosAmigos1" translatable="false">"Lucas Alonso, Victor Leon, Jose Villar, "</string>
     <string name="genteAgradecimientosAmigos2" translatable="false">David Alonso,Vanessa Cuartiella</string>
     <string name="genteAgradecimientoProfesores" translatable="false">Mila Ausin, Javier Conde</string>
     <string name="licencias">All elements used in this proyect</string>
     <string name="licenciasAgradecer">except the icons that are from Flaticon.es</string>
-    <string name="programadodiseñado">Programmed and designed by</string>
-    <string name="yo" translatable="false">Hadrián Villar Cuadrado</string>
+    <string name="programadoelaborado">Programmed and elaborated by</string>
+    <string name="yo" translatable="false">Hadrian Villar Cuadrado</string>
     <string name="programador">Programmer</string>
     <string name="licenciastitulo">Licenses</string>
     <string name="licenciasAgr2">are public domain</string>

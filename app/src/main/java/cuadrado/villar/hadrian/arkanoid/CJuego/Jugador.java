@@ -8,7 +8,6 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 
 /**
- * <h1>Jugador</h1>
  * Objeto jugador, utilizado en el juego.
  *
  * @author Hadrián Villar Cuadrado
@@ -77,7 +76,7 @@ public class Jugador {
 //        c.drawRect(centro, p3);
 //        c.drawRect(cd, p4);
 //        c.drawRect(ed, p5);
-        c.drawRect(contenedor,p1);
+//        c.drawRect(contenedor,p1);
     }
 
     /**

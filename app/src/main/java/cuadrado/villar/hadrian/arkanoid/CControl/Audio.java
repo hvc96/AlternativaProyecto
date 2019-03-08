@@ -9,7 +9,6 @@ import android.media.SoundPool;
 import cuadrado.villar.hadrian.arkanoid.R;
 
 /**
- *<h1>Audio</h1>
  * Clase donde se cargan los distintos archivos de música y asi podemos tratar con esta.
  *
  * @author Hadrián Villar Cuadrado
@@ -41,6 +40,8 @@ public class Audio {
         //Musica de fondo (canción)
         mediaPlayer = MediaPlayer.create(contexto, R.raw.cancionmenu);
         mediaPlayer = MediaPlayer.create(contexto, R.raw.canciongameplay);
+
+
         int v = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         mediaPlayer.setVolume(v / 2, v / 2);
         mediaPlayer.setLooping(true);
@@ -54,9 +55,7 @@ public class Audio {
         } else {
             this.efectos = new SoundPool(maxSonidosSimultaneos, AudioManager.STREAM_MUSIC, 0);
         }
-        //Efectos
-        sColision = efectos.load(contexto, R.raw.colision, 1);
-        sVictoria = efectos.load(contexto,R.raw.victoria,1);
-        sDerrota = efectos.load(contexto,R.raw.derrota,1);
+
+        //Quito efectos, porque me fallan en la app.
     }
 }
