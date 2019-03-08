@@ -18,6 +18,12 @@ import java.util.Locale;
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
 
+/**
+ * <h1>Opciones</h1>
+ * Pantalla Opciones, se gestiona los sensores y el idioma de la aplicación.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class Opciones extends Escena {
 
     String idioma = Locale.getDefault().getLanguage().toLowerCase().trim();
@@ -26,6 +32,13 @@ public class Opciones extends Escena {
     boolean mmusica, vvibracion, inggles, ggiroscopio, ccastellano;
     int alto, ancho;
 
+    /**
+     * Constructor de clase.
+     * @param context Contexto de la aplicación.
+     * @param idEscena Define la pantalla en la que estamos.
+     * @param anchoPantalla Ancho de la pantalla.
+     * @param altoPantalla Alto de la pantalla.
+     */
     public Opciones(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
@@ -108,18 +121,23 @@ public class Opciones extends Escena {
 
     }
 
-
+    /**
+     * Actualiza las físicas.
+     */
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
 
     }
 
+    /**
+     * Método para el dibujado del jugador.
+     *
+     * @param c Objeto Canvas para utilizar los métodos útiles para el dibujo.
+     */
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
             c.drawColor(Color.WHITE);
-//            c.drawBitmap(volverAtras, 0, 0, null);
-
             if (mmusica) {
                 c.drawBitmap(sonidoONImagen, anchoPantalla / 2 - sonidoONImagen.getWidth() / 2, alto, null);
             } else {
@@ -153,7 +171,11 @@ public class Opciones extends Escena {
         }
     }
 
-
+    /**
+     * Método para la gestión de la pulsación en la pantalla.
+     * @param event Evento ocasionado al tocar la pantalla.
+     * @return Devuelve la escena en la que se encuentra.
+     */
     public int onTouchEvent(MotionEvent event) {
 
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
@@ -195,7 +217,7 @@ public class Opciones extends Escena {
 
     /*
      * Establece el idioma del sistema
-     * @param languageCode Codigo del nuevo lenguaje: es, en, gl, ....
+     * @param languageCode Codigo del nuevo lenguaje: es, en, ....
      */
     public void changeLanguage(String languageCode) {
         Resources res = getContext().getResources();

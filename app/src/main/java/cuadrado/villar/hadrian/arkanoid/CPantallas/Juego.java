@@ -37,6 +37,12 @@ import cuadrado.villar.hadrian.arkanoid.R;
 
 import static android.content.Context.SENSOR_SERVICE;
 
+/**
+ * <h1>Juego</h1>
+ * Pantalla Juego, donde se produce el gameplay de la aplicación.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class Juego extends Escena {
     float dedoCoordX, dedoCoordY;
     int movimiento, tiempoVibracion, vidas, pts, indice;
@@ -61,6 +67,10 @@ public class Juego extends Escena {
 
     // Create a listener
     SensorEventListener gyroscopeSensorListener = new SensorEventListener() {
+        /**
+         * Método que se ejecuta cuando el sensor detecta una rotación sobre el eje x (sensorEvent.values[0]).
+         * @param sensorEvent Evento del sensor.
+         */
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (moverGiroscopio) {
@@ -72,12 +82,23 @@ public class Juego extends Escena {
             }
         }
 
+        /**
+         * Método ejecutado cuando se cambia la precisión del sensor.
+         * @param sensor Sensor.
+         * @param i Precisión del sensor.
+         */
         @Override
         public void onAccuracyChanged(Sensor sensor, int i) {
         }
     };
 
-
+    /**
+     * Constructor de clase.
+     * @param context Contexto de la aplicación.
+     * @param idEscena Define la pantalla en la que estamos.
+     * @param anchoPantalla Ancho de la pantalla.
+     * @param altoPantalla Alto de la pantalla.
+     */
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
@@ -183,6 +204,9 @@ public class Juego extends Escena {
 
     }
 
+    /**
+     * Actualiza las físicas.
+     */
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
         if (!juegoPausado) {
@@ -274,6 +298,11 @@ public class Juego extends Escena {
         }
     }
 
+    /**
+     * Método para el dibujado del jugador.
+     *
+     * @param c Objeto Canvas para utilizar los métodos útiles para el dibujo.
+     */
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
@@ -311,12 +340,14 @@ public class Juego extends Escena {
         }
     }
 
+    /**
+     * Método para la gestión de la pulsación en la pantalla.
+     * @param event Evento ocasionado al tocar la pantalla.
+     * @return Devuelve la escena en la que se encuentra.
+     */
     public int onTouchEvent(MotionEvent event) {
 
-        int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
-        int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
-        int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
-        //detectRotation(event);
+        int accion = event.getActionMasked();   //Obtenemos el tipo de pulsación
 
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
@@ -381,7 +412,9 @@ public class Juego extends Escena {
         return -123;//No cambia porque no existe este caso
     }
 
-
+    /**
+     * Método para restar una vida.
+     */
     public void perderVida() {
         if (vidas != 0) {
             vidas--;
@@ -393,6 +426,9 @@ public class Juego extends Escena {
         }
     }
 
+    /**
+     * Método para el reset de la posicón del jugador y de la bola.
+     */
     public void resetPosicion() {
         bola.posicion.x = anchoPantalla / 2;
         bola.posicion.y = altoPantalla - getDp(55);
@@ -404,6 +440,10 @@ public class Juego extends Escena {
         bola.actualizarRect();
     }
 
+    /**
+     * Método que te devuelve a la pantalla menú.
+     * @return Devuelve el id de pantalla.
+     */
     public int jugarOtraVez() {
 
         if (vidas < 1) {
@@ -412,6 +452,9 @@ public class Juego extends Escena {
         return 100; //Pantalla juego
     }
 
+    /**
+     * Método para resetear la velocidad de la bola una vez reseteada la posición.
+     */
     public void resetVelocidad() {
         if (vidas > 0) {
             bola.setVelocidadX(25);
@@ -419,6 +462,9 @@ public class Juego extends Escena {
         }
     }
 
+    /**
+     * Método para la gestión de la vibración del dispositivo.
+     */
     public void vibrar() {
         if (!vibracion) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -429,20 +475,11 @@ public class Juego extends Escena {
         }
     }
 
-
-//    public void colocarImagenes(int n){
-//        Ladrillo ladrillo= new Ladrillo(x, y, ladrilloImagenAmarillo);
-//        Bitmap[] fotos= new Bitmap[2];
-//        imagenes=ladrillo.coloresRandom(n);
-//        fotos[0]=ladrillo.imagen;
-//        fotos[1]=ladrillo.imagen;
-//
-//        imagenes[0]=Bitmap.createScaledBitmap(ladrillo.coloresRandom(n),anchoPantalla/5,altoPantalla/30,false);
-//        imagenes[1]=Bitmap.createScaledBitmap(ladrillo.coloresRandom(n),anchoPantalla/5,altoPantalla/30,false);
-//
-//    }
-
-
+    /**
+     * Método para la creación de los objetos ladrillo.
+     * @param nMax Número máximo de ladrillos a crear.
+     * @return Devuelve el ArrayList de Ladrillos.
+     */
     public ArrayList<Ladrillo> creaLadrillos(int nMax) {
         ArrayList<Ladrillo> alLadrillos = new ArrayList<>();
         int cont = 0;
@@ -461,6 +498,9 @@ public class Juego extends Escena {
         return alLadrillos;
     }
 
+    /**
+     * Método que se ejecuta para introducir la puntuación sobre la base de datos.
+     */
     public void insertPuntuacion() {
         int maxId = 0;
         bd = new BaseDatos(getContext(), "puntos", null, 1);
@@ -479,4 +519,16 @@ public class Juego extends Escena {
         sqldb.close();
     }
 
+//    TODO: Imagenes aleatorias.
+//    public void colocarImagenes(int n){
+//        Ladrillo ladrillo= new Ladrillo(x, y, ladrilloImagenAmarillo);
+//        Bitmap[] fotos= new Bitmap[2];
+//        imagenes=ladrillo.coloresRandom(n);
+//        fotos[0]=ladrillo.imagen;
+//        fotos[1]=ladrillo.imagen;
+//
+//        imagenes[0]=Bitmap.createScaledBitmap(ladrillo.coloresRandom(n),anchoPantalla/5,altoPantalla/30,false);
+//        imagenes[1]=Bitmap.createScaledBitmap(ladrillo.coloresRandom(n),anchoPantalla/5,altoPantalla/30,false);
+//
+//    }
 }

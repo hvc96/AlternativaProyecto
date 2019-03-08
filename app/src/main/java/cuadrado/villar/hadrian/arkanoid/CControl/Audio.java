@@ -15,25 +15,11 @@ import cuadrado.villar.hadrian.arkanoid.R;
  * @author Hadrián Villar Cuadrado
  */
 public class Audio {
-    /**
-     * Coleccion de efectos de sonido o samples de audio.
-     */
+
     SoundPool efectos;
-    /**
-     *Implementacion de clase Mediaplayer, para disponer de las funciones: start, stop, isplaying, etc.
-     */
     public MediaPlayer mediaPlayer;
-    /**
-     * Gestiona el volumen y los efectos sonoros del sistema.
-     */
     AudioManager audioManager;
-    /**
-     * Rige el número máximo de streams activos.
-     */
     int maxSonidosSimultaneos = 10;
-    /**
-     * Samples de sonido.
-     */
     public int sColision, sVictoria, sDerrota;
 
     /**

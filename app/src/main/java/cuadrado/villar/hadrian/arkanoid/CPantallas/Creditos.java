@@ -14,6 +14,12 @@ import java.util.ArrayList;
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.R;
 
+/**
+ * <h1>Créditos</h1>
+ * Pantalla Créditos, utilizado en el juego para mostrar la información referente a los agradecimientos imagenes y demás.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class Creditos extends Escena {
 
     String tt0,t1,t2,tt3,t4,tt5,t6,t7,t8,tt9,t10,t22;
@@ -21,6 +27,13 @@ public class Creditos extends Escena {
     ArrayList<String> alTextos;
     int alto;
 
+    /**
+     * Constructor de clase.
+     * @param context Contexto de la aplicación.
+     * @param idEscena Define la pantalla en la que estamos.
+     * @param anchoPantalla Ancho de la pantalla.
+     * @param altoPantalla Alto de la pantalla.
+     */
     public Creditos(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
@@ -63,12 +76,19 @@ public class Creditos extends Escena {
     }
 
 
-
+    /**
+     * Actualiza las físicas.
+     */
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica(){
 
     }
 
+    /**
+     * Método para el dibujado del jugador.
+     *
+     * @param c Objeto Canvas para utilizar los métodos útiles para el dibujo.
+     */
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
@@ -93,7 +113,11 @@ public class Creditos extends Escena {
     }
 
 
-
+    /**
+     * Método para la gestión de la pulsación en la pantalla.
+     * @param event Evento ocasionado al tocar la pantalla.
+     * @return Devuelve la escena en la que se encuentra.
+     */
     public int onTouchEvent(MotionEvent event) {
 
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación

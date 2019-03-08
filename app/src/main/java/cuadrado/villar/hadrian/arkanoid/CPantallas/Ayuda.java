@@ -8,20 +8,38 @@ import android.view.MotionEvent;
 
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 
+/**
+ * <h1>Ayuda</h1>
+ * Pantalla Ayuda, utilizado en el juego.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class Ayuda extends Escena {
 
+    /**
+     * Constructor de clase.
+     * @param context Contexto de la aplicación.
+     * @param idEscena Define la pantalla en la que estamos.
+     * @param anchoPantalla Ancho de la pantalla.
+     * @param altoPantalla Alto de la pantalla.
+     */
     public Ayuda(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
-//        fondo = getBitmapFromAssets("fondoAyuda.jpg");
-//        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
     }
 
-
+    /**
+     * Actualiza las físicas.
+     */
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
 
     }
 
+    /**
+     * Método para el dibujado del jugador.
+     *
+     * @param c Objeto Canvas para utilizar los métodos útiles para el dibujo.
+     */
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
@@ -33,10 +51,12 @@ public class Ayuda extends Escena {
         }
     }
 
-
+    /**
+     * Método para la gestión de la pulsación en la pantalla.
+     * @param event Evento ocasionado al tocar la pantalla.
+     * @return Devuelve la escena en la que se encuentra.
+     */
     public int onTouchEvent(MotionEvent event) {
-
-
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
@@ -52,5 +72,4 @@ public class Ayuda extends Escena {
         }
         return idEscena;
     }
-
 }

@@ -16,6 +16,12 @@ import android.view.MotionEvent;
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.R;
 
+/**
+ * <h1>Menú</h1>
+ * Pantalla Menú, se gestiona el control de escenas de la aplicación.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class Menu extends Escena {
 
     Bitmap fondo;
@@ -25,6 +31,13 @@ public class Menu extends Escena {
     Paint p;
     public MediaPlayer mediaPlayer;
 
+    /**
+     * Constructor de clase.
+     * @param context Contexto de la aplicación.
+     * @param idEscena Define la pantalla en la que estamos.
+     * @param anchoPantalla Ancho de la pantalla.
+     * @param altoPantalla Alto de la pantalla.
+     */
     public Menu(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
 
@@ -67,11 +80,13 @@ public class Menu extends Escena {
         p.setTextAlign(Paint.Align.CENTER);
     }
 
-
+    /**
+     * Método para la gestión de la pulsación en la pantalla.
+     * @param event Evento ocasionado al tocar la pantalla.
+     * @return Devuelve la escena en la que se encuentra.
+     */
     public int onTouchEvent(MotionEvent event) {
 
-        int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
-        int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
@@ -110,12 +125,19 @@ public class Menu extends Escena {
         return idEscena;
     }
 
-
+    /**
+     * Actualiza las físicas.
+     */
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica() {
 
     }
 
+    /**
+     * Método para el dibujado del jugador.
+     *
+     * @param c Objeto Canvas para utilizar los métodos útiles para el dibujo.
+     */
     // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
