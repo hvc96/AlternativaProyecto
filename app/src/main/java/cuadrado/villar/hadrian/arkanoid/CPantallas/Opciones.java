@@ -96,6 +96,16 @@ public class Opciones extends Escena {
         } else {
             inggles = false;
         }
+
+        switch (idioma) {
+            case "es":
+                ccastellano = true;
+                break;
+            case "en":
+                inggles = true;
+                break;
+        }
+
     }
 
 
@@ -167,11 +177,13 @@ public class Opciones extends Escena {
                 } else if (pulsa(castellano, event)) {
                     ccastellano = true;
                     inggles = false;
+                    changeLanguage("es");
                     editor.putBoolean("castellano",ccastellano);
                     editor.putBoolean("ingles",inggles);
                 } else if (pulsa(ingles, event)) {
                     inggles = true;
                     ccastellano = false;
+                    changeLanguage("en");
                     editor.putBoolean("castellano",ccastellano);
                     editor.putBoolean("ingles",inggles);
                 }

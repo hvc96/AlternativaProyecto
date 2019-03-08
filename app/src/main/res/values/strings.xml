@@ -11,4 +11,11 @@
     <string name="genteAgradecimientosAmigos1" translatable="false">"Lucas Alonso, Victor León, José Villar, "</string>
     <string name="genteAgradecimientosAmigos2" translatable="false">David Alonso,Vanessa Cuartiella</string>
     <string name="genteAgradecimientoProfesores" translatable="false">Mila Ausin, Javier Conde</string>
+    <string name="licencias">All elements used in this proyect</string>
+    <string name="licenciasAgradecer">except the icons that are from Flaticon.es</string>
+    <string name="programadodiseñado">Programmed and designed by</string>
+    <string name="yo" translatable="false">Hadrián Villar Cuadrado</string>
+    <string name="programador">Programmer</string>
+    <string name="licenciastitulo">Licenses</string>
+    <string name="licenciasAgr2">are public domain</string>
 </resources>

@@ -21,7 +21,14 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <h1>Escena</h1>
+ * Clase de la cual extienden todas las pantallas.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class Escena {
+
     Context context;
     public int idEscena;
     public int anchoPantalla, altoPantalla;
@@ -34,6 +41,13 @@ public class Escena {
     public static SharedPreferences prefs;
     public static SharedPreferences.Editor editor;
 
+    /**
+     * Constructor de clase.
+     * @param context Contexto de la aplicación.
+     * @param idEscena Número que retornará en el menú para el manejo de escenas.
+     * @param anchoPantalla Ancho del dispositivo en el que se ejecuta la apliación.
+     * @param altoPantalla Alto del dispositivo en el que se ejecuta la aplicación.
+     */
     public Escena(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         this.context = context;
         this.idEscena = idEscena;
@@ -75,22 +89,38 @@ public class Escena {
         prefs.getBoolean("ingles", true);
     }
 
-
+    /**
+     * Método para la gestión de la pulsación en la pantalla.
+     * @param event Evento ocasionado al tocar la pantalla.
+     * @return Devuelve la escena en la que se encuentra.
+     */
     public int onTouchEvent(MotionEvent event) {
         return idEscena;
     }
 
+    /**
+     * Método para la gestión de la pulsación sobre un botón, el cual genera un evento.
+     * @param boton Botón de forma rectangular soobre el que se ejecuta la pulsación.
+     * @param event Evento ocasionado por la pulsación de la pantalla para saber donde pulsa el individuo.
+     * @return Devuelve true si presiona un botón, false si es en otro lado.
+     */
     public boolean pulsa(Rect boton, MotionEvent event) {
         if (boton.contains((int) event.getX(), (int) event.getY())) return true;
         else return false;
     }
 
-
+    /**
+     * Método para la actualización de las físicas.
+     */
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
 
     }
 
+    /**
+     * Método para dibujar sobre el lienzo del dispositivo.
+     * @param c Objeto Canvas para utilizar los métodos útiles para el dibujo.
+     */
     // Rutina de dibujo en el lienzo de los elementos comunes. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
@@ -104,47 +134,36 @@ public class Escena {
         }
     }
 
-
+    /**
+     * Getter del contexto
+     * @return Devuelve el contexto
+     */
     public Context getContext() {
         return context;
     }
 
+    /**
+     * Setter del contexto
+     * @param context Contexto de la aplicación
+     */
     public void setContext(Context context) {
         this.context = context;
     }
 
+    /**
+     * Getter de idEscena.
+     * @return Devuelve una referencia de la escena en la que te encuentras.
+     */
     public int getIdEscena() {
         return idEscena;
     }
 
-    public void setIdEscena(int idEscena) {
-        this.idEscena = idEscena;
-    }
 
-    public int getAnchoPantalla() {
-        return anchoPantalla;
-    }
-
-    public void setAnchoPantalla(int anchoPantalla) {
-        this.anchoPantalla = anchoPantalla;
-    }
-
-    public int getAltoPantalla() {
-        return altoPantalla;
-    }
-
-    public void setAltoPantalla(int altoPantalla) {
-        this.altoPantalla = altoPantalla;
-    }
-
-    public Bitmap getFondo() {
-        return fondo;
-    }
-
-    public void setFondo(Bitmap fondo) {
-        this.fondo = fondo;
-    }
-
+    /**
+     * Método para obtener una imagen a partir de un fichero.
+     * @param fichero Fichero donde se encuentra.
+     * @return Devuelve un bitmap localizado en dicho fichero.
+     */
     public Bitmap getBitmapFromAssets(String fichero) {
         try {
             InputStream is = context.getAssets().open(fichero);
@@ -154,64 +173,34 @@ public class Escena {
         }
     }
 
-    public static Bitmap getBitmapFromAssets(Context context, String filePath) {
-        AssetManager assetManager = context.getAssets();
 
-        InputStream istr;
-        Bitmap bitmap = null;
-        try {
-            istr = assetManager.open(filePath);
-            bitmap = BitmapFactory.decodeStream(istr);
-        } catch (IOException e) {
-            // handle exception
-        }
-
-        return bitmap;
-    }
-
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
-
-    public int getDp(int pixels) {
         /**
-         * Calculo de las coordenada y en relacion al una pantalla de 1208x775
-         * @param pixels coordenada en pixses en realcion a una pantalla de 1208x775
-         * @return coordenada adaptada a la resolucion del dispositivo
+         * Calculo de las coordenada y en relacion al una pantalla de 1208x775.
+         * @param pixels coordenada en pixeles en relacion a una pantalla de 1208x775.
+         * @return coordenada adaptada a la resolucion del dispositivo.
          */
+    public int getDp(int pixels) {
         return (int) ((pixels / 7.75) * altoPantalla) / 100;
     }
 
-    public Bitmap[] getFrames(int numImg, String dir, String tag, int width){
-        Bitmap[] aux=new Bitmap[numImg];
-        for (int i=0;i<numImg;i++) aux[i]=escalaAnchura(dir+"/"+tag+" ("+(i+1)+").png",width);
-        return aux;
-    }
 
-    public  Bitmap escalaAnchura(String fichero, int nuevoAncho) {
-        Bitmap bitmapAux=getBitmapFromAssets(fichero);
-        if (nuevoAncho==bitmapAux.getWidth()) return bitmapAux;
-        return bitmapAux.createScaledBitmap(bitmapAux, nuevoAncho, (bitmapAux.getHeight() * nuevoAncho) / bitmapAux.getWidth(), true);
-    }
+//TODO No se usan, implementar en un futuro.
 
-    public void cambiaFrame(int numImg,long tFrameAuxm, long tiempoFrame, int indice){
-        if (System.currentTimeMillis()-tFrameAuxm>tiempoFrame) {
-            indice++;
-            if (indice>= numImg)indice=0;
-            tFrameAuxm=System.currentTimeMillis();
-        }
-    }
+//    public void cambiaFrame(int numImg,long tFrameAuxm, long tiempoFrame, int indice){
+//        if (System.currentTimeMillis()-tFrameAuxm>tiempoFrame) {
+//            indice++;
+//            if (indice>= numImg)indice=0;
+//            tFrameAuxm=System.currentTimeMillis();
+//        }
+//    }
+//    public Bitmap[] getFrames(int numImg, String dir, String tag, int width){
+//        Bitmap[] aux=new Bitmap[numImg];
+//        for (int i=0;i<numImg;i++) aux[i]=escalaAnchura(dir+"/"+tag+" ("+(i+1)+").png",width);
+//        return aux;
+//    }
+//    public  Bitmap escalaAnchura(String fichero, int nuevoAncho) {
+//        Bitmap bitmapAux=getBitmapFromAssets(fichero);
+//        if (nuevoAncho==bitmapAux.getWidth()) return bitmapAux;
+//        return bitmapAux.createScaledBitmap(bitmapAux, nuevoAncho, (bitmapAux.getHeight() * nuevoAncho) / bitmapAux.getWidth(), true);
+//    }
 }

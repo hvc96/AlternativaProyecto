@@ -50,7 +50,7 @@ public class Bola {
 
     public void dibujar(Canvas c) {
         c.drawBitmap(imagen, posicion.x, posicion.y, null);
-        c.drawRect(contenedor, paint);
+        //c.drawRect(contenedor, paint);
     }
 
     public void actualizarRect() {

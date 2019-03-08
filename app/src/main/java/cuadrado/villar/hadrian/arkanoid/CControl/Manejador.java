@@ -14,6 +14,12 @@ import cuadrado.villar.hadrian.arkanoid.CPantallas.Menu;
 import cuadrado.villar.hadrian.arkanoid.CPantallas.Opciones;
 import cuadrado.villar.hadrian.arkanoid.CPantallas.Records;
 
+/**
+ * <h1>Manejador</h1>
+ * Clase donde se controla el cambio entre pantallas.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
     private SurfaceHolder surfaceHolder;      // Interfaz abstracta para manejar la superficie de dibujado
     private Context context;                  // Contexto de la aplicación
@@ -24,7 +30,10 @@ public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
     private boolean funcionando = false;      // Control del hilo
     Escena escenaActual;
 
-
+    /**
+     * Constructor de clase.
+     * @param context Contexto de la aplicación.
+     */
     public Manejador(Context context) {
         super(context);
         this.surfaceHolder = getHolder();       // Se obtiene el holder
@@ -35,8 +44,11 @@ public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
     }
 
 
-
-
+    /**
+     * Método para la gestión de la pulsación en la pantalla.
+     * @param event Evento ocasionado al tocar la pantalla.
+     * @return Devuelve la escena en la que se encuentra.
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         synchronized (surfaceHolder) {
@@ -81,13 +93,20 @@ public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
         return true;
     }
 
-
+    /**
+     * Una vez creado se lanza el hilo.
+     * @param surfaceHolder Manejador de la pantalla.
+     */
     // Callbacks del SurfaceHolder ///////////////////////////////////
     @Override // En cuanto se crea el SurfaceView lanzamos el hilo
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
 
     }
 
+    /**
+     * Se detiene el hilo una vez se termina el uso del surface.
+     * @param surfaceHolder Manejador de la pantalla.
+     */
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         hilo.setFuncionando(false);  // Se para el hilo
@@ -98,6 +117,13 @@ public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
+    /**
+     * Método que se ejecuta cuando cambiamos la pantalla.
+     * @param holder  Manejador de pantalla.
+     * @param format Formato de pantalla.
+     * @param width Ancho de pantalla.
+     * @param height Alto de pantalla.
+     */
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         anchoPantalla = width;               // se establece el nuevo ancho de pantalla
@@ -115,7 +141,9 @@ public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
 
     }
 
-
+    /**
+     * Hilo que permite lanzar los métodos dibujar y actualizar fisica en las distintas clases de la aplicación.
+     */
     // Clase Hilo en la cual implementamos el método de dibujo (y física) para que se haga en paralelo con la gestión de la interfaz de usuario
     class Hilo extends Thread {
         public Hilo(){
@@ -146,12 +174,19 @@ public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
             }
         }
 
-        // Activa o desactiva el funcionamiento del hilo
+        /**
+         * Activa o desactiva el funcionamiento del hilo.
+         * @param flag Si es true funciona, si es false no.
+         */
         void setFuncionando(boolean flag) {
             funcionando = flag;
         }
 
-        // Función es llamada si cambia el tamaño de la pantall o la orientación
+        /**
+         * Función que es llamada si cambia el tamaño de la pantalla o la orientación.
+         * @param width Ancho de la pantalla.
+         * @param height Alto de la pantalla.
+         */
         public void setSurfaceSize(int width, int height) {
             synchronized (surfaceHolder) {
             }

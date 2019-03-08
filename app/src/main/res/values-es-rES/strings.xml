@@ -9,4 +9,10 @@
     <string name="perder">Has perdido</string>
     <string name="ganar">Has ganado</string>
     <string name="agradecimientos">Agradecimientos</string>
+    <string name="licenciasAgradecer">excepto los iconos que son de Flaticon.es</string>
+    <string name="licencias">Todos los elementos usados en este proyecto</string>
+    <string name="programadodiseñado">Programado y diseñado por</string>
+    <string name="programador">Programador</string>
+    <string name="licenciastitulo">Licencias</string>
+    <string name="licenciasAgr2">" son de dominio público"</string>
 </resources>

@@ -54,11 +54,12 @@ public class Jugador {
 
     public void dibujar(Canvas c) {
         c.drawBitmap(imagen, posicion.x, posicion.y, null);
-        c.drawRect(ei, p1);
-        c.drawRect(ci, p2);
-        c.drawRect(centro, p3);
-        c.drawRect(cd, p4);
-        c.drawRect(ed, p5);
+//        c.drawRect(ei, p1);
+//        c.drawRect(ci, p2);
+//        c.drawRect(centro, p3);
+//        c.drawRect(cd, p4);
+//        c.drawRect(ed, p5);
+        c.drawRect(contenedor,p1);
     }
 
     public RectF getRect() {
@@ -99,6 +100,6 @@ public class Jugador {
 
     public void moverJugadorGiroscopio(float nuevaPosX){
         this.posicion.x=nuevaPosX-imagen.getWidth()/2;
-        this.actualizarRects();
+        this.actualizarRects(); // No se porque razon no me los actualiza si los llamo desde aqui
     }
 }

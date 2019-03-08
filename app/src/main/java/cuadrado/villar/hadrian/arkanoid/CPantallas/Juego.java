@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 import cuadrado.villar.hadrian.arkanoid.CControl.Audio;
 import cuadrado.villar.hadrian.arkanoid.CControl.BaseDatos;
@@ -38,14 +39,14 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class Juego extends Escena {
     float dedoCoordX, dedoCoordY;
-    int movimiento, tiempoVibracion, vidas, idEscenaJuego, pts, indice;
+    int movimiento, tiempoVibracion, vidas, pts, indice;
     boolean pulsandoIzquierda, pulsandoDerecha, moverGiroscopio, reseteado = false, perder = false, pplay, juegoPausado = false, ganar = false, vibracion;
     RectF izquierda, derecha;
     Rect botonPlayPause;
     Bola bola;
     long tiempo;
     Jugador jugador;
-    Bitmap jugadorImagen1,bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAmarilloRompiendo, vidaImagen, pauseImagen, playImagen;
+    Bitmap jugadorImagen1, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAmarilloRompiendo, vidaImagen, pauseImagen, playImagen;
     float velocidadJugador = 20, velocidadBolaX = 25, velocidadBolaY = 15;
     Paint pTextoblanco, pBarra, p;
     ArrayList<Ladrillo> ladrillos;
@@ -53,7 +54,7 @@ public class Juego extends Escena {
     Sensor giroscopio;
     SensorManager sm;
     String perdertxt, ganartxt, query;
-
+    Bitmap[] imagenes;
     Cursor c;
     MediaPlayer mediaPlayer;
     Audio audio;
@@ -64,8 +65,9 @@ public class Juego extends Escena {
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (moverGiroscopio) {
                 float posXGiro = anchoPantalla / 2 - sensorEvent.values[0] * 100;
-                if (posXGiro >= 0 && posXGiro <= anchoPantalla) {
+                if (posXGiro  >= 0 +jugador.imagen.getWidth()/2 && posXGiro <= anchoPantalla-jugador.imagen.getWidth()/2) {
                     jugador.moverJugadorGiroscopio(posXGiro);
+                    jugador.actualizarRects();
                 }
             }
         }
@@ -78,6 +80,11 @@ public class Juego extends Escena {
 
     public Juego(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
+
+        imagenes = new Bitmap[2];
+
+        Random rand = new Random();
+        int n = rand.nextInt(8); // Dara un int aleatorio entre 0 y 8 incluidos
 
         indice = 0;
         pts = 0;
@@ -138,6 +145,7 @@ public class Juego extends Escena {
         vidaImagen = getBitmapFromAssets("Jugador/Vida/vida.png");
         vidaImagen = Bitmap.createScaledBitmap(vidaImagen, altoPantalla / 20, altoPantalla / 20, false);
 
+        //Play/Pause
         playImagen = getBitmapFromAssets("Botones/play.png");
         playImagen = Bitmap.createScaledBitmap(playImagen, altoPantalla / 16, altoPantalla / 16, false);
         pauseImagen = getBitmapFromAssets("Botones/pause.png");
@@ -175,26 +183,6 @@ public class Juego extends Escena {
 
     }
 
-
-    public ArrayList<Ladrillo> creaLadrillos(int nMax) {
-        ArrayList<Ladrillo> alLadrillos = new ArrayList<>();
-        int cont = 0;
-        // Empieza en 40 porque son para botones vidas etc
-        int y = altoPantalla / 20, x = 0;
-        for (int i = 0; i < nMax; i++) {
-            if (cont % 5 == 0) {
-                y += ladrilloImagenAmarillo.getHeight();
-                x = 0;
-            }
-            Ladrillo ladrillo = new Ladrillo(x, y, ladrilloImagenAmarillo);
-            alLadrillos.add(ladrillo);
-            x += ladrilloImagenAmarillo.getWidth();
-            cont++;
-        }
-
-        return alLadrillos;
-    }
-
     // Actualizamos la física de los elementos comunes en pantalla
     public void actualizarFisica() {
         if (!juegoPausado) {
@@ -228,9 +216,9 @@ public class Juego extends Escena {
                         }
                         break;
                 }
-            }else{
-                jugador.actualizarRects();
             }
+                jugador.actualizarRects();
+
             bola.actualizarFisica();
             bola.limites(anchoPantalla);
 
@@ -278,11 +266,9 @@ public class Juego extends Escena {
                 perderVida();
                 resetPosicion();
                 reseteado = true;
-                if (perder || ganar) {
+                if (ganar||perder) {
 //                sqldb.execSQL("INSERT INTO puntos(pts) VALUES()");
-                    idEscenaJuego = 0;
-                } else {
-                    idEscenaJuego = 100;
+
                 }
             }
         }
@@ -312,7 +298,7 @@ public class Juego extends Escena {
                 if (perder) {
                     c.drawColor(Color.BLACK);
                     c.drawText(perdertxt, anchoPantalla / 2, altoPantalla / 2, p);
-                    c.drawText(pts + " puntos", anchoPantalla / 2, altoPantalla / 2 + getDp(100), pTextoblanco);
+                    c.drawText(pts + " pts", anchoPantalla / 2, altoPantalla / 2 + getDp(100), pTextoblanco);
                 }
 
                 if (ganar) {
@@ -347,10 +333,7 @@ public class Juego extends Escena {
                         jugador.moverJugador(2);
                     }
                 }
-                if (perder || ganar) {
-                    if (mediaPlayer.isPlaying()||mediaPlayer.isLooping())
-                    mediaPlayer.stop();
-                }
+
                 if (pulsa(botonPlayPause, event)) {
                     if (prefs.getBoolean("musica", true)) {
                         if (pplay) {
@@ -362,6 +345,10 @@ public class Juego extends Escena {
 
                         }
                     }
+                    if (perder || ganar) {
+                        if (mediaPlayer.isPlaying() || mediaPlayer.isLooping())
+                            mediaPlayer.stop();
+                    }
 
                     pplay = !pplay;
                     editor.putBoolean("play", pplay);
@@ -372,16 +359,17 @@ public class Juego extends Escena {
                     resetVelocidad();
                     reseteado = false;
                 }
+
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
+                if (perder||ganar) return 0; //Vuelve al menu
                 pulsandoIzquierda = false;
                 pulsandoDerecha = false;
-                if (perder)
-                    return 0; //Vuelve al menu
+                break;
+            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 break;
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
 
@@ -401,6 +389,7 @@ public class Juego extends Escena {
             perder = false;
         } else {
             perder = true;
+            mediaPlayer.stop();
         }
     }
 
@@ -438,6 +427,38 @@ public class Juego extends Escena {
                 vibrador.vibrate(tiempoVibracion);
             }
         }
+    }
+
+
+//    public void colocarImagenes(int n){
+//        Ladrillo ladrillo= new Ladrillo(x, y, ladrilloImagenAmarillo);
+//        Bitmap[] fotos= new Bitmap[2];
+//        imagenes=ladrillo.coloresRandom(n);
+//        fotos[0]=ladrillo.imagen;
+//        fotos[1]=ladrillo.imagen;
+//
+//        imagenes[0]=Bitmap.createScaledBitmap(ladrillo.coloresRandom(n),anchoPantalla/5,altoPantalla/30,false);
+//        imagenes[1]=Bitmap.createScaledBitmap(ladrillo.coloresRandom(n),anchoPantalla/5,altoPantalla/30,false);
+//
+//    }
+
+
+    public ArrayList<Ladrillo> creaLadrillos(int nMax) {
+        ArrayList<Ladrillo> alLadrillos = new ArrayList<>();
+        int cont = 0;
+        int y = altoPantalla / 20, x = 0;
+        for (int i = 0; i < nMax; i++) {
+            if (cont % 5 == 0) {
+                y += ladrilloImagenAmarillo.getHeight();
+                x = 0;
+            }
+            Ladrillo ladrillo = new Ladrillo(x, y, ladrilloImagenAmarillo);
+            alLadrillos.add(ladrillo);
+            x += ladrilloImagenAmarillo.getWidth();
+            cont++;
+        }
+
+        return alLadrillos;
     }
 
     public void insertPuntuacion() {

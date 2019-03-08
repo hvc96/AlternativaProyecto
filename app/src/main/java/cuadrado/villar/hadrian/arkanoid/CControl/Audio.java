@@ -8,29 +8,53 @@ import android.media.SoundPool;
 
 import cuadrado.villar.hadrian.arkanoid.R;
 
+/**
+ *<h1>Audio</h1>
+ * Clase donde se cargan los distintos archivos de música y asi podemos tratar con esta.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class Audio {
+    /**
+     * Coleccion de efectos de sonido o samples de audio.
+     */
     SoundPool efectos;
+    /**
+     *Implementacion de clase Mediaplayer, para disponer de las funciones: start, stop, isplaying, etc.
+     */
     public MediaPlayer mediaPlayer;
-    int v;
+    /**
+     * Gestiona el volumen y los efectos sonoros del sistema.
+     */
     AudioManager audioManager;
+    /**
+     * Rige el número máximo de streams activos.
+     */
     int maxSonidosSimultaneos = 10;
-    boolean musicaReproduciendo;
+    /**
+     * Samples de sonido.
+     */
     public int sColision, sVictoria, sDerrota;
 
-    public boolean isMusicaReproduciendo() {
-        return musicaReproduciendo;
-    }
-
+    /**
+     * Devuelve la coleccion de samples.
+     * @return Coleccion de efectos de sonido.
+     */
     public SoundPool getEfectos() {
         return efectos;
     }
 
+    /**
+     * Constructor de clase.
+     * @param contexto Contexto de la aplicación.
+     * @param maxSonidosSimultaneos Especifica el número máximo de sonidos emitiendose en el mismo momento.
+     */
     public Audio(Context contexto, int maxSonidosSimultaneos) {
         this.maxSonidosSimultaneos = maxSonidosSimultaneos;
         audioManager = (AudioManager) contexto.getSystemService(Context.AUDIO_SERVICE);
         //Musica de fondo (canción)
         mediaPlayer = MediaPlayer.create(contexto, R.raw.cancionmenu);
-        //mediaPlayer = MediaPlayer.create(contexto, R.raw.canciongameplay);
+        mediaPlayer = MediaPlayer.create(contexto, R.raw.canciongameplay);
         int v = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         mediaPlayer.setVolume(v / 2, v / 2);
         mediaPlayer.setLooping(true);
@@ -44,6 +68,7 @@ public class Audio {
         } else {
             this.efectos = new SoundPool(maxSonidosSimultaneos, AudioManager.STREAM_MUSIC, 0);
         }
+        //Efectos
         sColision = efectos.load(contexto, R.raw.colision, 1);
         sVictoria = efectos.load(contexto,R.raw.victoria,1);
         sDerrota = efectos.load(contexto,R.raw.derrota,1);

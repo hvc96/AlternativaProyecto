@@ -84,10 +84,21 @@ public class Menu extends Escena {
                 if (pulsa(juego, event)) {
                     mediaPlayer.stop();
                     return 100;             //Juego         ->100
-                } else if (pulsa(ayuda, event)) return 10;        //Ayuda         ->10
-                else if (pulsa(creditos, event)) return 20;     //Creditos      ->20
-                else if (pulsa(opciones, event)) return 30;     //Opciones      ->30
-                else if (pulsa(records, event)) return 40;      //Records       ->40
+                } else if (pulsa(ayuda, event)) {
+                    mediaPlayer.stop();
+                    return 10;              //Ayuda         ->10
+                } else if (pulsa(creditos, event)) {
+                    mediaPlayer.stop();
+                    return 20;              //Creditos      ->20
+                }
+                else if (pulsa(opciones, event)){
+                    mediaPlayer.stop();
+                    return 30;              //Opciones      ->30
+                }
+                else if (pulsa(records, event)) {
+                    mediaPlayer.stop();
+                    return 40;      //Records       ->40
+                }
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos

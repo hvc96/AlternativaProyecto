@@ -9,18 +9,22 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
+
 import java.util.ArrayList;
+
+import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 
 public class Ladrillo {
 
+    Escena a;
     RectF contenedor;
     float x, y;
     public Bitmap imagen;
     public PointF posicion;
     public Paint paint;
     public int cont2 = 0;
-    int numImpactos=2;
-
+    int numImpactos = 2;
+    Bitmap ladrilloImagenAmarillo, ladrilloImagenAzul, ladrilloImagenAzulOscuro, ladrilloImagenMarron, ladrilloImagenNaranja, ladrilloImagenRojo, ladrilloImagenVerde, ladrilloImagenVerdeLima, ladrilloImagenVioleta, ladrilloImagenAmarilloRompiendo, ladrilloImagenAzulRompiendo, ladrilloImagenAzulOscuroRompiendo, ladrilloImagenMarronRompiendo, ladrilloImagenNaranjaRompiendo, ladrilloImagenRojoRompiendo, ladrilloImagenVerdeRompiendo, ladrilloImagenVerdeLimaRompiendo, ladrilloImagenVioletaRompiendo;
 
 
     public Ladrillo(float x, float y, Bitmap imagen) {
@@ -43,7 +47,7 @@ public class Ladrillo {
 
     public void dibujar(Canvas c) {
         c.drawBitmap(imagen, posicion.x, posicion.y, null);
-        c.drawRect(contenedor, paint);
+//        c.drawRect(contenedor, paint);
 
 
     }
@@ -53,13 +57,58 @@ public class Ladrillo {
     }
 
     public boolean colisionaLadrillos(Bola bola, Bitmap imagen) {
-            if (bola.getContenedor().intersect(contenedor) && bola.isRestaChoque()) {
-                bola.setRestaChoque(false);
-              numImpactos--;
-              this.imagen=imagen;
-                return true;
-            }
+        if (bola.getContenedor().intersect(contenedor) && bola.isRestaChoque()) {
+            bola.setRestaChoque(false);
+            numImpactos--;
+            this.imagen = imagen;
+            return true;
+        }
 
         return false;
+    }
+
+    public Bitmap[] coloresRandom(int rand) {
+        Bitmap[] bitmaps = new Bitmap[2];
+        switch (rand) {
+            case 0:
+                bitmaps[0] = ladrilloImagenAmarillo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_amarillo.png");
+                bitmaps[1] = ladrilloImagenAmarilloRompiendo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_amarillo_rompiendo.png");
+                break;
+            case 1:
+                bitmaps[0] = ladrilloImagenAzul = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul.png");
+                bitmaps[1] = ladrilloImagenAzulRompiendo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul_rompiendo.png");
+                break;
+            case 2:
+                bitmaps[0] = ladrilloImagenAzulOscuro = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul_oscuro.png");
+                bitmaps[1] = ladrilloImagenAzulOscuroRompiendo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_azul_oscuro_rompiendo.png");
+                break;
+            case 3:
+                bitmaps[0] = ladrilloImagenMarron = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_marron.png");
+                bitmaps[1] = ladrilloImagenMarronRompiendo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_marron_rompiendo.png");
+                break;
+            case 4:
+                bitmaps[0] = ladrilloImagenNaranja = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_naranja.png");
+                bitmaps[1] = ladrilloImagenNaranjaRompiendo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_naranja_rompiendo.png");
+                break;
+            case 5:
+
+                bitmaps[0] = ladrilloImagenRojo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_rojo.png");
+                bitmaps[1] = ladrilloImagenRojoRompiendo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_rojo_rompiendo.png");
+                break;
+            case 6:
+                bitmaps[0] = ladrilloImagenVerde = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_verde.png");
+                bitmaps[1] = ladrilloImagenVerdeRompiendo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_verde_rompiendo.png");
+                break;
+            case 7:
+                bitmaps[0] = ladrilloImagenVerdeLima = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_verde_lima.png");
+                bitmaps[1] = ladrilloImagenVerdeLimaRompiendo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo_verde_lima_rompiendo.png");
+                break;
+            case 8:
+                bitmaps[0] = ladrilloImagenVioleta = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo:violeta.png");
+                bitmaps[1] = ladrilloImagenVioletaRompiendo = a.getBitmapFromAssets("Ladrillos/Normales/ladrillo:violeta_rompiendo.png");
+                break;
+        }
+
+return bitmaps;
     }
 }

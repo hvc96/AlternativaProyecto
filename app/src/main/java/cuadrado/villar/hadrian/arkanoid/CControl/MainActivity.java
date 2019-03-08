@@ -12,17 +12,28 @@ import cuadrado.villar.hadrian.arkanoid.CPantallas.Menu;
 
 import static cuadrado.villar.hadrian.arkanoid.CControl.Escena.prefs;
 
+/**
+ * <h1>Main Activity</h1>
+ * Clase donde se controla la creacíon, pausa, etc de la aplicación.
+ *
+ * @author Hadrián Villar Cuadrado
+ */
 public class MainActivity extends AppCompatActivity {
 
     Menu menu;
 
+    /**
+     * Método que se ejecuta cuando se instala la aplicacion
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View decorView=getWindow().getDecorView();
+        View decorView = getWindow().getDecorView();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        int opciones= View.SYSTEM_UI_FLAG_FULLSCREEN
+        int opciones = View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // Oculta la barra de navegación
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -39,12 +50,20 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
     }
+
+    /**
+     * Método que se ejecuta cuando se sale de la aplicacion sin llegar a cerrarla, pausandola por ende.
+     */
     @Override
     protected void onPause() {
         super.onPause();
 //        if (prefs.getBoolean("play",true))
 //        menu.mediaPlayer.pause();
     }
+
+    /**
+     * Se ejecuta cuando se vuelve del estado onpause.
+     */
     @Override
     protected void onResume() {
         super.onResume();

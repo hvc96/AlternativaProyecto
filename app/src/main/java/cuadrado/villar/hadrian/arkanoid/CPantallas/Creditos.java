@@ -3,18 +3,63 @@ package cuadrado.villar.hadrian.arkanoid.CPantallas;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 
 
+import java.util.ArrayList;
+
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
+import cuadrado.villar.hadrian.arkanoid.R;
 
 public class Creditos extends Escena {
 
+    String tt0,t1,t2,tt3,t4,tt5,t6,t7,t8,tt9,t10,t22;
+    Paint pNormal,pTitulo;
+    ArrayList<String> alTextos;
+    int alto;
+
     public Creditos(Context context, int idEscena, int anchoPantalla, int altoPantalla) {
         super(context, idEscena, anchoPantalla, altoPantalla);
-//        fondo = getBitmapFromAssets("fondoCreditos.jpg");
-//        fondo= Bitmap.createScaledBitmap(fondo,anchoPantalla,altoPantalla,false);
+
+        alto=altoPantalla/21;
+
+        tt0 = context.getString(R.string.licenciastitulo);
+
+        t1 = context.getString(R.string.licencias);
+        t2 = context.getString(R.string.licenciasAgradecer);
+        t22=context.getString(R.string.licenciasAgr2);
+
+        tt3 = context.getString(R.string.programador);
+
+        t4 = context.getString(R.string.yo);
+
+        tt5 = context.getString(R.string.agradecimientos);
+        t6 = context.getString(R.string.genteAgradecimientoProfesores);
+        t7 = context.getString(R.string.genteAgradecimientosAmigos1);
+        t8 = context.getString(R.string.genteAgradecimientosAmigos2);
+
+        tt9 = context.getString(R.string.programadodiseñado);
+        t10 = context.getString(R.string.yo);
+
+
+        Typeface faw1 = Typeface.createFromAsset(context.getAssets(), "Fuentes/PoiretOne-Regular.ttf");
+        Typeface faw2 = Typeface.createFromAsset(context.getAssets(), "Fuentes/WELTRON2.TTF");
+
+        pTitulo= new Paint();
+        pTitulo.setTypeface(faw2);
+        pTitulo.setTextSize(getDp(30));
+        pTitulo.setColor(Color.BLACK);
+        pTitulo.setTextAlign(Paint.Align.CENTER);
+
+        pNormal = new Paint();
+        pNormal.setTypeface(faw1);
+        pNormal.setTextSize(getDp(20));
+        pNormal.setColor(Color.BLACK);
+        pNormal.setStrokeWidth(10);
+        pNormal.setTextAlign(Paint.Align.CENTER);
     }
 
 
@@ -28,7 +73,19 @@ public class Creditos extends Escena {
     public void dibujar(Canvas c) {
         try {
             c.drawColor(Color.WHITE);
-//            c.drawBitmap(fondo,0,0,null);
+            c.drawText(tt0,anchoPantalla/2,alto*2,pTitulo);
+            c.drawText(t1,anchoPantalla/2,alto*4,pNormal);
+            c.drawText(t2,anchoPantalla/2,alto*5,pNormal);
+            c.drawText(t22,anchoPantalla/2,alto*6,pNormal);
+            c.drawText(tt3,anchoPantalla/2,alto*8,pTitulo);
+            c.drawText(t4,anchoPantalla/2,alto*10,pNormal);
+            c.drawText(tt5,anchoPantalla/2,alto*12,pTitulo);
+            c.drawText(t6,anchoPantalla/2,alto*14,pNormal);
+            c.drawText(t7,anchoPantalla/2,alto*15,pNormal);
+            c.drawText(t8,anchoPantalla/2,alto*16,pNormal);
+            c.drawText(tt9,anchoPantalla/2,alto*18,pTitulo);
+            c.drawText(t10,anchoPantalla/2,alto*20,pNormal);
+
             super.dibujar(c);
         } catch (Exception e) {
             Log.i("Error al dibujar",e.getLocalizedMessage());
