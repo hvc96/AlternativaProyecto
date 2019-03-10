@@ -13,16 +13,62 @@ import android.graphics.RectF;
  * @author Hadrián Villar Cuadrado
  */
 public class Jugador {
+    /**
+     * Rectangulo donde se dibuja el objeto.
+     */
     public RectF contenedor;
-    public float anchoPantalla, x, y, velocidadJugador;
+    /**
+     * Ancho de la pantalla.
+     */
+    public float anchoPantalla;
+    /**
+     * Coordenada en el eje y.
+     */
+    public float y;
+    /**
+     * Velocidad en el eje x.
+     */
+    public float velocidadJugador;
+    /**
+     * Imagen del objeto.
+     */
     public Bitmap imagen;
+    /**
+     * Vector de coordenadas x,y;
+     */
     public PointF posicion;
-    public RectF centro, ci, cd, ei, ed;
-    float size = 0;
+    /**
+     * Rectangulo donde detecta la colision en el medio del objeto.
+     */
+    public RectF centro;
+    /**
+     * Rectangulo donde detecta la colision en el centro-izquierda del objeto.
+     */
+    public RectF ci;
+    /**
+     * Rectangulo donde detecta la colision en el centro-derecha del objeto.
+     */
+    public RectF cd;
+    /**
+     * Rectangulo donde detecta la colision en el extremo izquierdo del objeto.
+     */
+    public RectF ei;
+    /**
+     * Rectangulo donde detecta la colision en el extremo derecho del objeto.
+     */
+    public RectF ed;
+    /**
+     * Tamaño total del objeto.
+     */
+    float size;
+    /**
+     * Número de partes en el que se divide el objeto.
+     */
     float partes;
+    /**
+     * Número de partes.
+     */
     int numPartes = 5;
-
-    Paint p1, p2, p3, p4, p5;
 
     /**
      * Constructor de clase.
@@ -45,23 +91,6 @@ public class Jugador {
         this.centro = new RectF(contenedor.left + partes * 2, contenedor.top, contenedor.left + partes * 3, contenedor.bottom);
         this.cd = new RectF(contenedor.left + partes * 3, contenedor.top, contenedor.left + partes * 4, contenedor.bottom);
         this.ed = new RectF(contenedor.left + partes * 4, contenedor.top, contenedor.right, contenedor.bottom);
-        p1 = new Paint();
-        p1.setColor(Color.RED);
-        p1.setStyle(Paint.Style.STROKE);
-        p2 = new Paint();
-        p2.setColor(Color.GREEN);
-        p2.setStyle(Paint.Style.STROKE);
-        p3 = new Paint();
-        p3.setColor(Color.BLUE);
-        p3.setStyle(Paint.Style.STROKE);
-        p4 = new Paint();
-        p4.setColor(Color.CYAN);
-        p4.setStyle(Paint.Style.STROKE);
-        p5 = new Paint();
-        p5.setColor(Color.YELLOW);
-        p5.setStyle(Paint.Style.STROKE);
-
-
     }
 
     /**
@@ -71,12 +100,6 @@ public class Jugador {
      */
     public void dibujar(Canvas c) {
         c.drawBitmap(imagen, posicion.x, posicion.y, null);
-//        c.drawRect(ei, p1);
-//        c.drawRect(ci, p2);
-//        c.drawRect(centro, p3);
-//        c.drawRect(cd, p4);
-//        c.drawRect(ed, p5);
-//        c.drawRect(contenedor,p1);
     }
 
     /**
@@ -120,7 +143,7 @@ public class Jugador {
     }
 
     /**
-     * Método para moverr al jugador mediante el giroscopio.
+     * Método para mover al jugador mediante el giroscopio.
      * @param nuevaPosX Coordenada en x proporcionada por el sensor.
      */
     public void moverJugadorGiroscopio(float nuevaPosX){

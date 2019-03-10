@@ -20,13 +20,33 @@ import cuadrado.villar.hadrian.arkanoid.CPantallas.Records;
  * @author Hadrián Villar Cuadrado
  */
 public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
-    private SurfaceHolder surfaceHolder;      // Interfaz abstracta para manejar la superficie de dibujado
-    private Context context;                  // Contexto de la aplicación
-
-    private int anchoPantalla=1;              // Ancho de la pantalla, su valor se actualiza en el método surfaceChanged
-    private int altoPantalla=1;               // Alto de la pantalla, su valor se actualiza en el método surfaceChanged
-    private Hilo hilo;                        // Hilo encargado de dibujar y actualizar la física
-    private boolean funcionando = false;      // Control del hilo
+    /**
+     * Interfaz abstracta para manejar la superficie de dibujado.
+     */
+    private SurfaceHolder surfaceHolder;
+    /**
+     * Contexto de la aplicación.
+     */
+    private Context context;
+    /**
+     * Ancho de la pantalla, su valor se actualiza en el método surfaceChanged.
+     */
+    private int anchoPantalla=1;
+    /**
+     * Alto de la pantalla, su valor se actualiza en el método surfaceChanged.
+     */
+    private int altoPantalla=1;
+    /**
+     * Hilo encargado de dibujar y actualizar la física.
+     */
+    private Hilo hilo;
+    /**
+     * Control del hilo.
+     */
+    private boolean funcionando = false;
+    /**
+     * Escena actual.
+     */
     Escena escenaActual;
 
     /**
@@ -51,8 +71,7 @@ public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         synchronized (surfaceHolder) {
-            int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
-            int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
+
             int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
 
             int codEscena = escenaActual.onTouchEvent(event);
@@ -160,7 +179,6 @@ public class Manejador  extends SurfaceView implements SurfaceHolder.Callback{
 
                     synchronized (surfaceHolder) {
                         if (c != null) {
-//                            Log.i("error","el maldito canvas es "+c);
                             escenaActual.dibujar(c);
                             escenaActual.actualizarFisica();  // Movimiento de los elementos
                         }

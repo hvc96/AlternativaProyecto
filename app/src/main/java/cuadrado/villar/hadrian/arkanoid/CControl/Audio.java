@@ -14,29 +14,36 @@ import cuadrado.villar.hadrian.arkanoid.R;
  * @author Hadrián Villar Cuadrado
  */
 public class Audio {
-
-    SoundPool efectos;
-    public MediaPlayer mediaPlayer;
-    AudioManager audioManager;
-    int maxSonidosSimultaneos = 10;
-    public int sColision, sVictoria, sDerrota;
-
     /**
-     * Devuelve la coleccion de samples.
-     * @return Coleccion de efectos de sonido.
+     * Efectos sonoros.
      */
-    public SoundPool getEfectos() {
-        return efectos;
-    }
+    SoundPool efectos;
+    /**
+     * Sonidos (Canciones, etc).
+     */
+    public MediaPlayer mediaPlayer;
+    /**
+     * Controlador del audio.
+     */
+    AudioManager audioManager;
+    /**
+     * Numero máxmio de sonidos simultaneos.
+     */
+    int maxSonidosSimultaneos;
+
 
     /**
      * Constructor de clase.
      * @param contexto Contexto de la aplicación.
      * @param maxSonidosSimultaneos Especifica el número máximo de sonidos emitiendose en el mismo momento.
      */
+
+    //TODO: Implementar esta clase para mayor modularidad
+
     public Audio(Context contexto, int maxSonidosSimultaneos) {
         this.maxSonidosSimultaneos = maxSonidosSimultaneos;
         audioManager = (AudioManager) contexto.getSystemService(Context.AUDIO_SERVICE);
+
         //Musica de fondo (canción)
         mediaPlayer = MediaPlayer.create(contexto, R.raw.cancionmenu);
         mediaPlayer = MediaPlayer.create(contexto, R.raw.canciongameplay);

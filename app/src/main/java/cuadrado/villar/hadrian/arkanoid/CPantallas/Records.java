@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -20,11 +19,34 @@ import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
  */
 public class Records extends Escena {
 
-    public Paint paint, pBronce, pPlata, pOro;
+    /**
+     * Paint para escribir los puntos en el podium.
+     */
+    public Paint pPuntos;
+    /**
+     * Paints para dibujar el podium (con sus distintos colores).
+     */
+    public Paint pBronce, pPlata, pOro;
+    /**
+     * Rectangulos donde dibujamos las barras del podium.
+     */
     Rect bronce, plata, oro;
+    /**
+     * Base de datos.
+     */
     BaseDatos bd;
+    /**
+     * ArrayList donde guardamos los valores de los records para luego mostrarlos por pantalla.
+     */
     ArrayList<Integer> alRecords;
-    int ancho, alto, primero = 0, segundo = 0, tercero = 0;
+    /**
+     * Fragmento del ancho total de la pantalla.
+     */
+    int ancho;
+    /**
+     * Fragmento del alto total de la pantalla.
+     */
+    int alto;
 
     /**
      * Constructor de clase.
@@ -56,16 +78,10 @@ public class Records extends Escena {
         bd = new BaseDatos(context, "puntos", null, 1);
         alRecords = bd.mostrarRecords(bd.getWritableDatabase());
 
-        paint = new Paint();
-        paint.setTextSize(60);
-        paint.setColor(Color.BLACK);
-        paint.setTextAlign(Paint.Align.CENTER);
-
-//        if (alRecords.size() > 0 && alRecords != null) {
-//            primero = alRecords.get(0);
-//            segundo = alRecords.get(1);
-//            tercero = alRecords.get(2);
-//        }
+        pPuntos = new Paint();
+        pPuntos.setTextSize(60);
+        pPuntos.setColor(Color.BLACK);
+        pPuntos.setTextAlign(Paint.Align.CENTER);
     }
 
     /**
@@ -90,17 +106,16 @@ public class Records extends Escena {
             c.drawRect(oro, pOro);
 
             if (alRecords.size() > 0) {
-                c.drawText(alRecords.get(1) + "", ancho * 2 + ancho / 2, alto * 4, paint);
+                c.drawText(alRecords.get(1) + "", ancho * 2 + ancho / 2, alto * 4, pPuntos);
             }
             if (alRecords.size() > 1) {
-                c.drawText(alRecords.get(0)+"", ancho * 4 + ancho / 2, alto * 3, paint);
+                c.drawText(alRecords.get(0)+"", ancho * 4 + ancho / 2, alto * 3, pPuntos);
             }
             if (alRecords.size() > 2) {
-                c.drawText(alRecords.get(2)+"", ancho * 6 + ancho / 2, alto * 5, paint);
+                c.drawText(alRecords.get(2)+"", ancho * 6 + ancho / 2, alto * 5, pPuntos);
             }
             super.dibujar(c);
         } catch (Exception e) {
-            Log.i("Error al dibujar", e.getLocalizedMessage());
         }
     }
 

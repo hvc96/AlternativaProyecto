@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
@@ -17,8 +16,17 @@ import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
  */
 public class Ayuda extends Escena {
 
+    /**
+     * Array de imagenes ayuda.
+     */
     Bitmap[] imagenes;
+    /**
+     * Contador del array.
+     */
     int cont;
+    /**
+     * Rectangulo donde detectamos la pulsación en la pantalla.
+     */
     Rect pantalla;
 
     /**
@@ -65,7 +73,6 @@ public class Ayuda extends Escena {
 
             super.dibujar(c);
         } catch (Exception e) {
-            Log.i("Error al dibujar", e.getLocalizedMessage());
         }
     }
 

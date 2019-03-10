@@ -2,17 +2,9 @@ package cuadrado.villar.hadrian.arkanoid.CJuego;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
-
-import java.util.ArrayList;
-
-import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 
 /**
  * Objeto Ladrillo, utilizado en el juego.
@@ -21,15 +13,23 @@ import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
  */
 public class Ladrillo {
 
-    Escena a;
+    /**
+     * Rectangulo donde se dubuja el objeto.
+     */
     RectF contenedor;
-    float x, y;
+    /**
+     * Imagen del objeto.
+     */
     public Bitmap imagen;
+    /**
+     * Vector de coordenadas x,y.
+     */
     public PointF posicion;
-    public Paint paint;
-    public int cont2 = 0;
+    /**
+     * Numero de impactos necesarios para destruir el ladrillo.
+     */
     int numImpactos = 2;
-    Bitmap ladrilloImagenAmarillo, ladrilloImagenAzul, ladrilloImagenAzulOscuro, ladrilloImagenMarron, ladrilloImagenNaranja, ladrilloImagenRojo, ladrilloImagenVerde, ladrilloImagenVerdeLima, ladrilloImagenVioleta, ladrilloImagenAmarilloRompiendo, ladrilloImagenAzulRompiendo, ladrilloImagenAzulOscuroRompiendo, ladrilloImagenMarronRompiendo, ladrilloImagenNaranjaRompiendo, ladrilloImagenRojoRompiendo, ladrilloImagenVerdeRompiendo, ladrilloImagenVerdeLimaRompiendo, ladrilloImagenVioletaRompiendo;
+    //Bitmap ladrilloImagenAmarillo, ladrilloImagenAzul, ladrilloImagenAzulOscuro, ladrilloImagenMarron, ladrilloImagenNaranja, ladrilloImagenRojo, ladrilloImagenVerde, ladrilloImagenVerdeLima, ladrilloImagenVioleta, ladrilloImagenAmarilloRompiendo, ladrilloImagenAzulRompiendo, ladrilloImagenAzulOscuroRompiendo, ladrilloImagenMarronRompiendo, ladrilloImagenNaranjaRompiendo, ladrilloImagenRojoRompiendo, ladrilloImagenVerdeRompiendo, ladrilloImagenVerdeLimaRompiendo, ladrilloImagenVioletaRompiendo;
 
     /**
      * Constructor de clase
@@ -38,10 +38,6 @@ public class Ladrillo {
      * @param imagen Imagen del ladrillo.
      */
     public Ladrillo(float x, float y, Bitmap imagen) {
-        paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
         this.posicion = new PointF(x, y);
         this.imagen = imagen;
         contenedor = new RectF(posicion.x, posicion.y, posicion.x + imagen.getWidth(), posicion.y + imagen.getHeight());
@@ -54,7 +50,6 @@ public class Ladrillo {
      */
     public void dibujar(Canvas c) {
         c.drawBitmap(imagen, posicion.x, posicion.y, null);
-//        c.drawRect(contenedor, paint);
     }
 
     /**

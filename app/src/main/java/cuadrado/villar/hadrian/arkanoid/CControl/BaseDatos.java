@@ -4,10 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 
 /**
  * Clase donde se trata la base de datos con SQLite.
@@ -16,12 +14,6 @@ import java.util.IllegalFormatCodePointException;
  */
 public class BaseDatos extends SQLiteOpenHelper {
     String sqlCreateTable = " CREATE TABLE IF NOT EXISTS puntos ('numero' INT)";
-//    String sqlInsertPts = "INSERT INTO puntos ('numero') VALUES" +
-//            "(5), " +
-//            "(0), " +
-//            "(0) ";
-
-
 
     /**
      * Constructor de clase.
@@ -44,7 +36,6 @@ public class BaseDatos extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(sqlCreateTable);
-//        db.execSQL(sqlInsertPts);
     }
 
     /**
@@ -60,7 +51,6 @@ public class BaseDatos extends SQLiteOpenHelper {
         // Es recomentable migrar previamente los datos
         db.execSQL("DROP TABLE IF EXISTS puntos ");
         db.execSQL(sqlCreateTable);
-//        db.execSQL(sqlInsertPts);
     }
 
     /**
@@ -83,9 +73,7 @@ public class BaseDatos extends SQLiteOpenHelper {
             if (resultadoSql.moveToFirst()) {
                 do {
                     cont++;
-//                    alRecords.add(resultadoSql.getInt(resultadoSql.getColumnIndex("numero")));
                     num=resultadoSql.getInt(resultadoSql.getColumnIndex("numero"));
-                    Log.i("num","ABASASD           "+cont+"  "+num);
                     alRecords.add(num);
                     if (cont == 3) break;
                 } while (resultadoSql.moveToNext());

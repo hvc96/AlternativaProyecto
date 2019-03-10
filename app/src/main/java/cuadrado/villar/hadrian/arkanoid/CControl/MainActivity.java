@@ -19,8 +19,6 @@ import static cuadrado.villar.hadrian.arkanoid.CControl.Escena.prefs;
  */
 public class MainActivity extends AppCompatActivity {
 
-    Menu menu;
-
     /**
      * Método que se ejecuta cuando se instala la aplicacion
      *
@@ -33,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         int opciones = View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // Oculta la barra de navegación
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE

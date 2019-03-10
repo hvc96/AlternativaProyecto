@@ -1,9 +1,6 @@
 package cuadrado.villar.hadrian.arkanoid.CPantallas;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -20,14 +17,10 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Random;
 
-import cuadrado.villar.hadrian.arkanoid.CControl.Audio;
 import cuadrado.villar.hadrian.arkanoid.CControl.BaseDatos;
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
 import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
@@ -43,26 +36,123 @@ import static android.content.Context.SENSOR_SERVICE;
  * @author Hadrián Villar Cuadrado
  */
 public class Juego extends Escena {
-    float dedoCoordX, dedoCoordY;
-    int movimiento, tiempoVibracion, vidas, pts, indice;
-    boolean pulsandoIzquierda, pulsandoDerecha, moverGiroscopio, reseteado = false, perder = false, pplay, juegoPausado = false, ganar = false, vibracion;
+    /**
+     * Coordenada x donde pulsamos con el dedo;
+     */
+    float dedoCoordX;
+    /**
+     * Coordenada y donde pulsamos con el dedo;
+     */
+    float dedoCoordY;
+    /**
+     * Indica la direccion del movimiento del jugador.
+     */
+    int movimiento;
+    /**
+     * Tiempo que va a estar vibrando.
+     */
+    int tiempoVibracion;
+    /**
+     * Numero de vidas.
+     */
+    int vidas;
+    /**
+     * Puntos obtenidos.
+     */
+    int pts;
+    /**
+     * Control de pulsacion en pantalla (izquierda o derecha).
+     */
+    boolean pulsandoIzquierda, pulsandoDerecha;
+    /**
+     * Control giroscopio activado/desactivado.
+     */
+    boolean moverGiroscopio;
+    /**
+     * Control si esta reseteado el jugador y bola una vez ha perdido una vida.
+     */
+    boolean reseteado = false;
+    /**
+     * Control de si ha ganado el juego o a perdido.
+     */
+    boolean perder = false,ganar;
+    /**
+     * Control del boton de pause/play.
+     */
+    boolean pplay;
+    /**
+     * Control de si el jeugo esta pausado o no.
+     */
+    boolean juegoPausado = false;
+    /**
+     * Control de si hay vibracion o no.
+     */
+    boolean vibracion;
+    /**
+     * Rectangulos donde se gestiona la pulsacion.
+     */
     RectF izquierda, derecha;
+    /**
+     * Rectangulo donde dibujamos el boton de play/pause.
+     */
     Rect botonPlayPause;
+    /**
+     * Objeto bola.
+     */
     Bola bola;
-    long tiempo;
+    /**
+     * Objeto jugador.
+     */
     Jugador jugador;
+    /**
+     * Imagenes de todos los elementos que hay en pantalla.
+     */
     Bitmap jugadorImagen1, bolaImagen, ladrilloImagenAmarillo, ladrilloImagenAmarilloRompiendo, vidaImagen, pauseImagen, playImagen;
-    float velocidadJugador = 20, velocidadBolaX = 25, velocidadBolaY = 15;
-    Paint pTextoblanco, pBarra, p;
+    /**
+     * Velocidad en el eje x del jugador.
+     */
+    float velocidadJugador = 20;
+    /**
+     * Velocidades en x,y de la bola.
+     */
+    float velocidadBolaX = 25, velocidadBolaY = 15;
+    /**
+     * Paint para textos y numero de vidas.
+     */
+    Paint pTextoblanco;
+    /**
+     * Paint con el que dibujamos la brra superior.
+     */
+    Paint pBarra;
+    /**
+     * Paint para los puntos.
+     */
+    Paint pPuntos;
+    /**
+     * ArrayList de objeto Ladrillo.
+     */
     ArrayList<Ladrillo> ladrillos;
+    /**
+     * Elemento vibrador.
+     */
     Vibrator vibrador = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+    /**
+     * Sensor giroscopio.
+     */
     Sensor giroscopio;
+    /**
+     * Manejador del sensor.
+     */
     SensorManager sm;
+    /**
+     * Textos de victoria y derrota.
+     */
     String perdertxt, ganartxt;
+    /**
+     * Sonidos y efectos del juego.
+     */
     MediaPlayer mediaPlayer, mDerrota, mVictoria;
 
-
-    Audio audio;
 
     // Create a listener
     SensorEventListener gyroscopeSensorListener = new SensorEventListener() {
@@ -104,7 +194,6 @@ public class Juego extends Escena {
 
         bd = new BaseDatos(context, "puntos", null, 1);
 
-        indice = 0;
         pts = 0;
         perdertxt = context.getString(R.string.perder);
         ganartxt = context.getString(R.string.ganar);
@@ -172,14 +261,12 @@ public class Juego extends Escena {
 
         ladrillos = creaLadrillos(25);
 
-        tiempo = System.currentTimeMillis();
-
         Typeface faw = Typeface.createFromAsset(context.getAssets(), "Fuentes/PoiretOne-Regular.ttf");
-        p = new Paint();
-        p.setTypeface(faw);
-        p.setTextSize(getDp(60));
-        p.setColor(Color.RED);
-        p.setTextAlign(Paint.Align.CENTER);
+        pPuntos = new Paint();
+        pPuntos.setTypeface(faw);
+        pPuntos.setTextSize(getDp(60));
+        pPuntos.setColor(Color.RED);
+        pPuntos.setTextAlign(Paint.Align.CENTER);
 
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         mediaPlayer = MediaPlayer.create(context, R.raw.canciongameplay);
@@ -203,6 +290,8 @@ public class Juego extends Escena {
         mDerrota.setLooping(false);
         mVictoria = MediaPlayer.create(context, R.raw.victoria);
         mVictoria.setLooping(false);
+
+        ganar = false;
     }
 
     /**
@@ -222,7 +311,7 @@ public class Juego extends Escena {
                         pts++;
                     }
                     if (ladrillos.isEmpty()) {
-                        audio.getEfectos().play(audio.sVictoria, 1, 1, 1, 0, 1);
+                        ganar=true;
                     }
                 }
             }
@@ -251,7 +340,6 @@ public class Juego extends Escena {
 
             if (bola.getContenedor().intersect(jugador.ei)) {
                 bola.setRestaChoque(true);
-                Log.i("velei", " " + bola.getVelocidadX());
                 if (bola.getVelocidadX() > 0) {
                     bola.reverseYVelocity();
                     bola.setVelocidadY(velocidadBolaY + 1);
@@ -260,19 +348,15 @@ public class Juego extends Escena {
                     bola.reverseXVelocity();
                 }
             } else if (bola.getContenedor().intersect(jugador.ci)) {
-                Log.i("velci", " " + bola.getVelocidadX());
                 bola.reverseYVelocity();
 
             } else if (bola.getContenedor().intersect(jugador.centro)) {
-                Log.i("velcentro", " " + bola.getVelocidadX());
                 bola.reverseYVelocity();
 
             } else if (bola.getContenedor().intersect(jugador.cd)) {
-                Log.i("velcd", " " + bola.getVelocidadX());
                 bola.reverseYVelocity();
 
             } else if (bola.getContenedor().intersect(jugador.ed)) {
-                Log.i("veled", " " + bola.getVelocidadX());
                 if (bola.getVelocidadX() > 0) {
                     bola.reverseYVelocity();
                     bola.reverseXVelocity();
@@ -328,19 +412,18 @@ public class Juego extends Escena {
 
                 if (perder) {
                     c.drawColor(Color.BLACK);
-                    c.drawText(perdertxt, anchoPantalla / 2, altoPantalla / 2, p);
+                    c.drawText(perdertxt, anchoPantalla / 2, altoPantalla / 2, pPuntos);
                     c.drawText(pts + " pts", anchoPantalla / 2, altoPantalla / 2 + getDp(100), pTextoblanco);
                 }
 
                 if (ganar) {
                     c.drawColor(Color.BLACK);
-                    c.drawText(ganartxt, anchoPantalla / 2, altoPantalla / 2, p);
+                    c.drawText(ganartxt, anchoPantalla / 2, altoPantalla / 2, pTextoblanco);
                 }
 
 
             }
         } catch (Exception e) {
-            Log.i("Error al dibujar", e.getLocalizedMessage());
         }
     }
 
@@ -389,7 +472,6 @@ public class Juego extends Escena {
                     reseteado = false;
                 }
                 if (perder || ganar) {
-                    Log.i("Holi", "jiji");
                     bd.introducirPuntuacion(bd.getWritableDatabase(), pts);
                     if (mediaPlayer.isPlaying() || mediaPlayer.isLooping()) {
                         mediaPlayer.stop();
@@ -410,7 +492,6 @@ public class Juego extends Escena {
 
                 break;
             default:
-                Log.i("Otra acción", "Acción no definida: " + accion);
         }
 
         return -123;//No cambia porque no existe este caso

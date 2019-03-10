@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.util.Log;
 import android.view.MotionEvent;
 
 
@@ -22,12 +21,33 @@ import cuadrado.villar.hadrian.arkanoid.R;
  * @author Hadrián Villar Cuadrado
  */
 public class Menu extends Escena {
-
+    /**
+     * Imagen de fondo.
+     */
     Bitmap fondo;
+    /**
+     * Rectangulos donde escribimos las distintas opciones.
+     */
     Rect ayuda, opciones, juego, records, creditos;
-    int alto, ancho;
+    /**
+     * Fragmento del alto total de la pantalla.
+     */
+    int alto;
+    /**
+     * Fragmento del ancho total de la pantalla.
+     */
+    int ancho;
+    /**
+     * Textos almacenados para el uso de cambio de idiomas.
+     */
     String jugartxt, ayudatxt, opcionestxt, recordstxt, creditostxt;
+    /**
+     * Fuente para escribir los textos.
+     */
     Paint p;
+    /**
+     * Canción de menu.
+     */
     public MediaPlayer mediaPlayer;
 
     /**
@@ -90,7 +110,6 @@ public class Menu extends Escena {
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
-                Log.i("idEs", "idEscena" + getIdEscena() + "       " + idEscena);
                 break;
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
@@ -119,7 +138,6 @@ public class Menu extends Escena {
 
                 break;
             default:
-                Log.i("Otra acción", "Acción no definida: " + accion);
         }
         return idEscena;
     }
@@ -144,24 +162,19 @@ public class Menu extends Escena {
             c.drawBitmap(fondo, 0, 0, null);
             super.dibujar(c);
 
-            c.drawRect(juego, pBoton2);
-            c.drawCircle(ancho * 5, alto * 3, ancho * 3, pBoton2);
+            c.drawRect(juego, pMenu);
+            c.drawCircle(ancho * 5, alto * 3, ancho * 3, pMenu);
             c.drawText(jugartxt, ancho * 5, juego.centerY() + (alto / 6), p);
 
-//            c.drawRect(ayuda,pBoton);
             c.drawText(ayudatxt, ayuda.exactCenterX(), ayuda.centerY() + (alto / 2), p);
 
-//            c.drawRect(opciones,pBoton);
             c.drawText(opcionestxt, opciones.exactCenterX(), opciones.centerY() + (alto / 2), p);
 
-//            c.drawRect(records,pBoton);
             c.drawText(recordstxt, records.exactCenterX(), records.centerY() + (alto / 2), p);
 
-//            c.drawRect(creditos,pBoton);
             c.drawText(creditostxt, creditos.exactCenterX(), creditos.centerY() + (alto / 2), p);
 
         } catch (Exception e) {
-            Log.i("Error al dibujar", e.getLocalizedMessage());
         }
     }
 }

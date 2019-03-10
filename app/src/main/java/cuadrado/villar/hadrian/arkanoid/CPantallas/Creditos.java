@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.MotionEvent;
 
 
@@ -21,8 +20,21 @@ import cuadrado.villar.hadrian.arkanoid.R;
  */
 public class Creditos extends Escena {
 
+    /**
+     * Textos a escribir.
+     */
     String tt0,t1,t2,tt3,t4,tt5,t6,t7,t8,tt9,t10,t22;
-    Paint pNormal,pTitulo;
+    /**
+     * Paint para escribir los textos normales.
+     */
+    Paint pNormal;
+    /**
+     * Paint para escribir los textos como titulos (otra fuente).
+     */
+    Paint pTitulo;
+    /**
+     * Fragmento de la pantalla (alto de la pantalla / 21).
+     */
     int alto;
 
     /**
@@ -106,7 +118,6 @@ public class Creditos extends Escena {
 
             super.dibujar(c);
         } catch (Exception e) {
-            Log.i("Error al dibujar",e.getLocalizedMessage());
         }
     }
 

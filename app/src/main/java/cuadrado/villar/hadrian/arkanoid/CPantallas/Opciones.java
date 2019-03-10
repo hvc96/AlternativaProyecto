@@ -6,17 +6,13 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.Locale;
 
 import cuadrado.villar.hadrian.arkanoid.CControl.Escena;
-import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
 
 /**
  * Pantalla Opciones, se gestiona los sensores y el idioma de la aplicación.
@@ -25,11 +21,30 @@ import cuadrado.villar.hadrian.arkanoid.CJuego.Bola;
  */
 public class Opciones extends Escena {
 
+    /**
+     * Idioma en el que se encuentra la aplicación
+     */
     String idioma = Locale.getDefault().getLanguage().toLowerCase().trim();
+    /**
+     * Imagenes de la pantalla opciones.
+     */
     Bitmap castellanoONImagen, castellanoOFFImagen, inglesONImagen, inglesOFFImagen, vibracionONImagen, vibracionOFFImagen, sonidoONImagen, sonidoOFFImagen, giroscopioONImagen, giroscopioOFFImagen;
+    /**
+     * Rectangulos donde dibujamos las diversas opciones.
+     */
     Rect castellano, ingles, vibracion, giroscopio, sonido;
+    /**
+     * Booleanas de control para ver si estan clickadas o no las distintas opciones.
+     */
     boolean mmusica, vvibracion, inggles, ggiroscopio, ccastellano;
-    int alto, ancho;
+    /**
+     * Fragmento del alto de la pantalla.
+     */
+    int alto;
+    /**
+     * Fragmento del ancho de la pantalla.
+     */
+    int ancho;
 
     /**
      * Constructor de clase.
@@ -166,7 +181,6 @@ public class Opciones extends Escena {
             }
             super.dibujar(c);
         } catch (Exception e) {
-            Log.i("Error al dibujar", e.getLocalizedMessage());
         }
     }
 

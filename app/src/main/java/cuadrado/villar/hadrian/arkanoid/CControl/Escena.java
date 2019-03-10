@@ -2,24 +2,16 @@ package cuadrado.villar.hadrian.arkanoid.CControl;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.res.AssetManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Clase de la cual extienden todas las pantallas.
@@ -28,16 +20,45 @@ import java.util.Map;
  */
 public class Escena {
 
+    /**
+     * Contexto de la aplciación.
+     */
     public Context context;
+    /**
+     * Identificador de la escena.
+     */
     public int idEscena;
-    public int anchoPantalla, altoPantalla;
-    public Bitmap fondo, botonRetroceder;
-    public Paint pTexto, pTexto2, pBoton, pBoton2, paint;
+    /**
+     * Ancho de la pantalla;
+     */
+    public int anchoPantalla;
+    /**
+     * Alto de la pantalla;
+     */
+    public int altoPantalla;
+    /**
+     * Imagen del boton retroceder.
+     */
+    public Bitmap botonRetroceder;
+    /**
+     * Paint para el boton circular "Jugar" del menú.
+     */
+    public Paint pMenu;
+    /**
+     * Rect donde dibujas el botón de retroceder.
+     */
     public Rect volverAtras;
-
+    /**
+     * Base de datos.
+     */
     public static BaseDatos bd;
-    public static SQLiteDatabase sqldb;
+    /**
+     * Archivo SharedPreferences.
+     */
     public static SharedPreferences prefs;
+    /**
+     * Editor de SharedPreferences.
+     */
     public static SharedPreferences.Editor editor;
 
     /**
@@ -52,29 +73,12 @@ public class Escena {
         this.idEscena = idEscena;
         this.anchoPantalla = anchoPantalla;
         this.altoPantalla = altoPantalla;
-        pTexto = new Paint();
-        pTexto2 = new Paint();
 
-        pTexto.setColor(Color.YELLOW);
-        pTexto.setTextAlign(Paint.Align.CENTER);
-        pTexto.setTextSize((int) (altoPantalla / 12));
-
-        pTexto2.setColor(Color.RED);
-        pTexto2.setTextAlign(Paint.Align.CENTER);
-        pTexto2.setTextSize(altoPantalla / 5);
-
-        pBoton = new Paint();
-        pBoton.setColor(Color.RED);
-
-        pBoton2 = new Paint();
-        pBoton2.setColor(Color.BLACK);
+        pMenu = new Paint();
+        pMenu.setColor(Color.BLACK);
 
         botonRetroceder = getBitmapFromAssets("Botones/atras.png");
         botonRetroceder = Bitmap.createScaledBitmap(botonRetroceder, getDp(50), getDp(60), false);
-
-        paint = new Paint();
-        paint.setColor(Color.YELLOW);
-        paint.setStyle(Paint.Style.STROKE);
 
         prefs = context.getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         editor = prefs.edit();
@@ -125,11 +129,9 @@ public class Escena {
         try {
             if (idEscena != 0 && idEscena != 100) {
                 c.drawBitmap(botonRetroceder, 0, 0, null);
-                //c.drawRect(volverAtras, paint);
             }
 
         } catch (Exception e) {
-            Log.i("Error al dibujar", e.getLocalizedMessage());
         }
     }
 

@@ -4,17 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
-import android.util.Log;
-import android.widget.ArrayAdapter;
-
-import java.util.ArrayList;
-import java.util.Random;
-
-import cuadrado.villar.hadrian.arkanoid.CPantallas.Juego;
 import cuadrado.villar.hadrian.arkanoid.R;
 
 /**
@@ -24,24 +16,39 @@ import cuadrado.villar.hadrian.arkanoid.R;
  */
 public class Bola {
 
+    /**
+     * Rectangulo donde se dibuja el objeto.
+     */
     public RectF contenedor;
-    float velocidadX, velocidadY;
-
+    /**
+     * Velocidad en el eje x del objeto.
+     */
+    float velocidadX;
+    /**
+     * Velocidad en el eje y del objeto.
+     */
+    float velocidadY;
+    /**
+     * Imagen del objeto.
+     */
     public Bitmap imagen;
+    /**
+     * Vector de las dos coordenadas x,y;
+     */
     public PointF posicion;
-    public Paint paint;
-    public boolean perdio = false, signo;
+    /**
+     * Propiedad que determina el cambio del objeto ladrillo (Cantidad de golpes que hay que darle), si esta a true, resta si esta a false, solo rebotaria en el sin eliminarlo.
+     */
     public boolean restaChoque = true;
+    /**
+     * Alto de la pantalla
+     */
     public int altoPantalla;
+    /**
+     * Sonido de colisión del objeto.
+     */
     MediaPlayer mColision;
 
-    public boolean isRestaChoque() {
-        return restaChoque;
-    }
-
-    public void setRestaChoque(boolean restaChoque) {
-        this.restaChoque = restaChoque;
-    }
 
     /**
      * Constructor de clase.
@@ -60,11 +67,6 @@ public class Bola {
         this.velocidadX = velocidadX;
         this.velocidadY = velocidadY;
         this.altoPantalla = altoPantalla;
-        //Para dibujar hitbox en caso de
-
-        paint = new Paint();
-        paint.setColor(Color.GREEN);
-        paint.setStyle(Paint.Style.STROKE);
 
         mColision = MediaPlayer.create(context, R.raw.colision);
         mColision.setLooping(false);
@@ -77,7 +79,6 @@ public class Bola {
      */
     public void dibujar(Canvas c) {
         c.drawBitmap(imagen, posicion.x, posicion.y, null);
-        //c.drawRect(contenedor, paint);
     }
 
     /**
@@ -97,7 +98,6 @@ public class Bola {
     public void actualizarFisica() {
         this.posicion.x = posicion.x - velocidadX;
         this.posicion.y = posicion.y - velocidadY;
-        Log.i("ladri", isRestaChoque() + "");
         actualizarRect();
     }
 
@@ -141,6 +141,14 @@ public class Bola {
 
     public void setVelocidadY(float velocidadY) {
         this.velocidadY = velocidadY;
+    }
+
+    public boolean isRestaChoque() {
+        return restaChoque;
+    }
+
+    public void setRestaChoque(boolean restaChoque) {
+        this.restaChoque = restaChoque;
     }
 
 
